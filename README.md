@@ -7,7 +7,7 @@ _This README contains basic information about the project and its artifacts. If 
 Nathan Steelman
 Andy Vece
 Sean Balayon
-- MEMBER4
+Nick Chavez
 - MEMBER5
 
 ## Repo Organization
