@@ -6,7 +6,7 @@ _This README contains basic information about the project and its artifacts. If 
 ## Team Members
 Nathan Steelman
 Andy Vece
-- MEMBER3
+Sean Balayon
 - MEMBER4
 - MEMBER5
 
