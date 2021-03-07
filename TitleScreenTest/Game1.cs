@@ -69,15 +69,16 @@ namespace TitleScreenTest
             GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch.Begin();
-            _spriteBatch.DrawString(Subtitle, "Choose Mode: ", new Vector2(35, 137), Color.Green);
-            _spriteBatch.DrawString(Normal, "Normal\nHard", new Vector2(35, 187), Color.Gray);
-            _spriteBatch.DrawString(frontLayer, "B", new Vector2(35, 37 + (15 * (float)Math.Sin(c / 6))), Colors.ToArray()[(shift) % Colors.Count]);
-            _spriteBatch.DrawString(frontLayer, "E", new Vector2(95, 37 + (15 * (float)Math.Sin(c / 6 + 30))), Colors.ToArray()[(1 + shift) % Colors.Count]);
-            _spriteBatch.DrawString(frontLayer, "G", new Vector2(155, 37 + (15 * (float)Math.Sin(c / 6 + 60))), Colors.ToArray()[(2 + shift) % Colors.Count]);
-            _spriteBatch.DrawString(frontLayer, "I", new Vector2(235, 37 + (15 * (float)Math.Sin(c / 6 + 90))), Colors.ToArray()[(3 + shift) % Colors.Count]);
-            _spriteBatch.DrawString(frontLayer, "N", new Vector2(275, 37 + (15 * (float)Math.Sin(c / 6 + 120))), Colors.ToArray()[(4 + shift) % Colors.Count]);
-            _spriteBatch.DrawString(frontLayer, "?", new Vector2(345, 37 + (15 * (float)Math.Sin(c / 6 + 150))), Colors.ToArray()[(5 + shift) % Colors.Count]);
-            _spriteBatch.DrawString(Normal, "Speedrun", new Vector2(35, 257), Color.Gray);
+            _spriteBatch.DrawString(frontLayer, "Giraffe Noise 2", new Vector2(35, 7), Color.OrangeRed);
+            _spriteBatch.DrawString(Subtitle, "Choose Mode: ", new Vector2(35, 187), Color.Green);
+            _spriteBatch.DrawString(Normal, "Normal\nHard", new Vector2(35, 237), Color.Gray);
+            _spriteBatch.DrawString(frontLayer, "B", new Vector2(35, 87 + (15 * (float)Math.Sin(c / 6))), Colors.ToArray()[(shift) % Colors.Count]);
+            _spriteBatch.DrawString(frontLayer, "E", new Vector2(95, 87 + (15 * (float)Math.Sin(c / 6 + 30))), Colors.ToArray()[(1 + shift) % Colors.Count]);
+            _spriteBatch.DrawString(frontLayer, "G", new Vector2(155, 87 + (15 * (float)Math.Sin(c / 6 + 60))), Colors.ToArray()[(2 + shift) % Colors.Count]);
+            _spriteBatch.DrawString(frontLayer, "I", new Vector2(235, 87 + (15 * (float)Math.Sin(c / 6 + 90))), Colors.ToArray()[(3 + shift) % Colors.Count]);
+            _spriteBatch.DrawString(frontLayer, "N", new Vector2(275, 87 + (15 * (float)Math.Sin(c / 6 + 120))), Colors.ToArray()[(4 + shift) % Colors.Count]);
+            _spriteBatch.DrawString(frontLayer, "?", new Vector2(345, 87 + (15 * (float)Math.Sin(c / 6 + 150))), Colors.ToArray()[(5 + shift) % Colors.Count]);
+            _spriteBatch.DrawString(Normal, "Speedrun", new Vector2(35, 307), Color.Gray);
 
             _spriteBatch.End();
             // TODO: Add your drawing code here
