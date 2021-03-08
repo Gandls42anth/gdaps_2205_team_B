@@ -118,7 +118,6 @@ namespace MainGame
                 case GameState.Title:
                     GraphicsDevice.Clear(Color.Black);
 
-                    _spriteBatch.Begin();
                     _spriteBatch.DrawString(frontLayer, "Giraffe Noise 2", new Vector2(35, 7), Color.OrangeRed);
                     _spriteBatch.DrawString(Subtitle, "Choose Mode: ", new Vector2(35, 187), Color.Green);
                     _spriteBatch.DrawString(Normal, "Normal\nHard", new Vector2(35, 237), Color.Gray);

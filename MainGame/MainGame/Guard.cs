@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MainGame
 {
-    class Guard : GameObject
+    class Guard
     {
     }
 }
