@@ -7,9 +7,10 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MainGame
 {
-    class Guard : GameObject
+    class NPC : GameObject
     {
-        protected Guard(Rectangle rect,Texture2D txt, int alert) : base(rect, txt)
+
+        protected NPC(Rectangle rect, Texture2D txt, string Message) : base(rect,txt)
         {
 
         }
