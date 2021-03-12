@@ -35,6 +35,8 @@ namespace MainGame
         private int c;
         private int shift;
 
+        private Rectangle GiraffeRectangle;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -68,6 +70,8 @@ namespace MainGame
             this.Subtitle = this.Content.Load<SpriteFont>("Subtitle");
             this.Normal = this.Content.Load<SpriteFont>("Normal");
             this.GiraffeSprite = this.Content.Load<Texture2D>("Giraffe");
+
+            GiraffeRectangle = new Rectangle(50, 50, GiraffeSprite.Width, GiraffeSprite.Height);
 
             currentState = GameState.Title;
         }
@@ -168,11 +172,14 @@ namespace MainGame
                 case GameState.Normal:
                     _spriteBatch.DrawString(frontLayer, "Placeholder for \nNormal mode", new Vector2(35, 7), Color.OrangeRed);
                     _spriteBatch.DrawString(Normal, "To exit, press enter", new Vector2(35, 307), Color.Yellow);
+                    _spriteBatch.Draw(GiraffeSprite, GiraffeRectangle, Color.White);
                     break;
 
                 case GameState.Hard:
                     _spriteBatch.DrawString(frontLayer, "Placeholder for \nHard mode", new Vector2(35, 7), Color.OrangeRed);
                     _spriteBatch.DrawString(Normal, "To exit, press enter", new Vector2(35, 307), Color.Yellow);
+                    _spriteBatch.Draw(GiraffeSprite, GiraffeRectangle, Color.White);
+                    
                     break;
 
                 case GameState.Speedrun:
