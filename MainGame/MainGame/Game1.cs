@@ -28,6 +28,7 @@ namespace MainGame
         private SpriteFont frontLayer;
         private SpriteFont Subtitle;
         private SpriteFont Normal;
+        private Texture2D GiraffeSprite;
         private List<Color> Colors;
         private KeyboardState KBS;
         private KeyboardState prevKBS;
@@ -66,6 +67,7 @@ namespace MainGame
             this.frontLayer = this.Content.Load<SpriteFont>("FrontLayer");
             this.Subtitle = this.Content.Load<SpriteFont>("Subtitle");
             this.Normal = this.Content.Load<SpriteFont>("Normal");
+            this.GiraffeSprite = this.Content.Load<Texture2D>("Giraffe");
 
             currentState = GameState.Title;
         }
