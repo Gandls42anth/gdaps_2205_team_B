@@ -9,9 +9,20 @@ namespace MainGame
 {
     class Player : GameObject
     {
-        protected Player(Rectangle rect,Texture2D txt) : base(rect, txt)
+        private bool caught;
+        private int speed;
+        private Rectangle playerRect;
+        private Texture2D playerTexture;
+        public Player(Rectangle rect,Texture2D txt) : base(rect, txt)
         {
+            this.playerTexture = txt;
+            this.playerRect = rect;
+        }
 
+
+        public void Draw(SpriteBatch sb)
+        {
+            sb.Draw(playerTexture, playerRect, Color.White);
         }
     }
 }

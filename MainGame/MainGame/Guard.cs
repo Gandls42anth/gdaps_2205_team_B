@@ -9,7 +9,7 @@ namespace MainGame
 {
     class Guard : GameObject
     {
-        protected Guard(Rectangle rect,Texture2D txt, int alert) : base(rect, txt)
+        public Guard(Rectangle rect,Texture2D txt, int alert) : base(rect, txt)
         {
 
         }

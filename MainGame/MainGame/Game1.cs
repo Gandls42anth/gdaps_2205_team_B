@@ -23,12 +23,14 @@ namespace MainGame
         // general fields
         private GameState currentState;
 
+        private Player player;
         // title fields
         private SpriteFont backLayer;
         private SpriteFont frontLayer;
         private SpriteFont Subtitle;
         private SpriteFont Normal;
         private Texture2D GiraffeSprite;
+        private Texture2D GiraffeSpriteWalk;
         private List<Color> Colors;
         private KeyboardState KBS;
         private KeyboardState prevKBS;
@@ -54,6 +56,7 @@ namespace MainGame
             Colors = new List<Color>(6) { Color.Red, Color.DarkOrange, Color.Yellow, Color.Green, Color.Blue, Color.Violet };
             this.prevKBS = Keyboard.GetState();
 
+
             base.Initialize();
         }
 
@@ -62,16 +65,17 @@ namespace MainGame
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-
             // title screen
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             this.backLayer = this.Content.Load<SpriteFont>("File");
             this.frontLayer = this.Content.Load<SpriteFont>("FrontLayer");
             this.Subtitle = this.Content.Load<SpriteFont>("Subtitle");
             this.Normal = this.Content.Load<SpriteFont>("Normal");
-            this.GiraffeSprite = this.Content.Load<Texture2D>("Giraffe");
+            this.GiraffeSprite = this.Content.Load<Texture2D>("GiraffeStatic");
+            this.GiraffeSpriteWalk = this.Content.Load<Texture2D>("GiraffeWalk");
 
-            GiraffeRectangle = new Rectangle(50, 50, GiraffeSprite.Width, GiraffeSprite.Height);
+            GiraffeRectangle = new Rectangle(300, 200, (int)GiraffeSprite.Width/4, (int)GiraffeSprite.Height/4);
+            this.player = new Player(GiraffeRectangle, this.GiraffeSprite);
 
             currentState = GameState.Title;
         }
@@ -172,7 +176,7 @@ namespace MainGame
                 case GameState.Normal:
                     _spriteBatch.DrawString(frontLayer, "Placeholder for \nNormal mode", new Vector2(35, 7), Color.OrangeRed);
                     _spriteBatch.DrawString(Normal, "To exit, press enter", new Vector2(35, 307), Color.Yellow);
-                    _spriteBatch.Draw(GiraffeSprite, GiraffeRectangle, Color.White);
+                    player.Draw(_spriteBatch);
                     break;
 
                 case GameState.Hard:

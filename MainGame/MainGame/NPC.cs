@@ -10,7 +10,7 @@ namespace MainGame
     class NPC : GameObject
     {
 
-        protected NPC(Rectangle rect, Texture2D txt, string Message) : base(rect,txt)
+        public NPC(Rectangle rect, Texture2D txt, string Message) : base(rect,txt)
         {
 
         }
