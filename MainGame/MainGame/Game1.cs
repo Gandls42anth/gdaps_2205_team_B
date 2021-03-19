@@ -54,7 +54,7 @@ namespace MainGame
             c = 0;
             shift = 0;
             Colors = new List<Color>(6) { Color.Red, Color.DarkOrange, Color.Yellow, Color.Green, Color.Blue, Color.Violet };
-            this.prevKBS = Keyboard.GetState();
+            this.prevKBS = new KeyboardState();
 
 
             base.Initialize();
@@ -112,11 +112,33 @@ namespace MainGame
                     }
                     break;
 
+
+                //This Section handless the state logic
+                //For the Normal, Hard and speedrun Modes
                 case GameState.Normal:
                     if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
                     {
                         currentState = GameState.Title;
                     }
+                    if (SingleKeyPress(Keys.W, KBS, prevKBS))
+                    {
+                        player.Y = this.player.Y - 50;
+                    }
+                    if (SingleKeyPress(Keys.S, KBS, prevKBS))
+                    {
+                        player.Y = this.player.Y + 50;
+                    }
+                    if (KeyHold(Keys.D, KBS, prevKBS))
+                    {
+                        player.Flip = true;
+                        player.X += 3;
+                    }
+                    if (KeyHold(Keys.A, KBS, prevKBS))
+                    {
+                        player.Flip = false;
+                        player.X -= 3;
+                    }
+
                     break;
 
                 case GameState.Hard:
@@ -175,7 +197,7 @@ namespace MainGame
 
                 case GameState.Normal:
                     _spriteBatch.DrawString(frontLayer, "Placeholder for \nNormal mode", new Vector2(35, 7), Color.OrangeRed);
-                    _spriteBatch.DrawString(Normal, "To exit, press enter", new Vector2(35, 307), Color.Yellow);
+                    _spriteBatch.DrawString(Normal, string.Format("To exit, press enter"), new Vector2(35, 307), Color.Yellow);
                     player.Draw(_spriteBatch);
                     break;
 
@@ -207,6 +229,11 @@ namespace MainGame
         protected bool SingleKeyPress(Keys key, KeyboardState kbs, KeyboardState prevkbs)
         {
             return (kbs.IsKeyUp(key) && prevkbs.IsKeyDown(key));
+        }
+
+        protected bool KeyHold(Keys key, KeyboardState kbs, KeyboardState prevkbs)
+        {
+            return (kbs.IsKeyDown(key) && prevkbs.IsKeyDown(key));
         }
 
         protected bool SingleMousePress(ButtonState b, MouseState ms, MouseState prevms)
