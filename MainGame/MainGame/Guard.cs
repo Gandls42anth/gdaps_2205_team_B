@@ -9,9 +9,11 @@ namespace MainGame
 {
     class Guard : GameObject
     {
+        private Rectangle view;
+        private int alert;
         public Guard(Rectangle rect,Texture2D txt, int alert) : base(rect, txt)
         {
-
+            this.alert = alert;
         }
     }
 }

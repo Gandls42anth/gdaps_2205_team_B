@@ -122,21 +122,37 @@ namespace MainGame
                     }
                     if (SingleKeyPress(Keys.W, KBS, prevKBS))
                     {
-                        player.Y = this.player.Y - 50;
+                        //This is the top barrier
+                        if (player.Y > 50)
+                        {
+                            player.Y = this.player.Y - 50;
+                        }
                     }
                     if (SingleKeyPress(Keys.S, KBS, prevKBS))
                     {
-                        player.Y = this.player.Y + 50;
+                        //This is the bottom barrier
+                        if (player.Y < 250)
+                        {
+                            player.Y = this.player.Y + 50;
+                        }
                     }
                     if (KeyHold(Keys.D, KBS, prevKBS))
                     {
                         player.Flip = true;
-                        player.X += 3;
+                        //Front Barrier
+                        if (player.X < 600)
+                        {
+                            player.X += 3;
+                        }
                     }
                     if (KeyHold(Keys.A, KBS, prevKBS))
                     {
                         player.Flip = false;
-                        player.X -= 3;
+                        //Back Barrier
+                        if (player.X > 30)
+                        {
+                            player.X -= 3;
+                        }
                     }
 
                     break;
@@ -196,7 +212,12 @@ namespace MainGame
                     break;
 
                 case GameState.Normal:
-                    _spriteBatch.DrawString(frontLayer, "Placeholder for \nNormal mode", new Vector2(35, 7), Color.OrangeRed);
+                    _spriteBatch.DrawString(
+                        frontLayer, 
+                        string.Format("X:{0}, Y:{1}, \nWidth:{2},Height:{3}",player.X,player.Y,player.Position.Width,player.Position.Height), 
+                        new Vector2(35, 7),
+                        Color.OrangeRed
+                        );
                     _spriteBatch.DrawString(Normal, string.Format("To exit, press enter"), new Vector2(35, 307), Color.Yellow);
                     player.Draw(_spriteBatch);
                     break;
