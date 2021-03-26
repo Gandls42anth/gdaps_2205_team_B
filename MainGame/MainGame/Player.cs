@@ -14,6 +14,8 @@ namespace MainGame
         private int orientation;
         private Rectangle playerRect;
         private Texture2D playerTexture;
+        private Rectangle playerCollision;
+
         private bool flip;
         //Position Properties to help change values
 
@@ -23,6 +25,7 @@ namespace MainGame
             set
             {
                 this.playerRect = new Rectangle(new Point(value, this.playerRect.Y), this.playerRect.Size);
+                this.playerCollision = new Rectangle(new Point(value, this.playerRect.Y-(playerRect.Height - 40)), this.playerCollision.Size);
             }
         }
         public int Y
@@ -31,6 +34,7 @@ namespace MainGame
             set
             {
                 this.playerRect = new Rectangle(new Point(this.playerRect.X, value), this.playerRect.Size);
+                this.playerCollision = new Rectangle(new Point(this.playerCollision.X, this.playerRect.Y - (playerRect.Height - 40)), this.playerCollision.Size);
             }
         }
 
@@ -68,6 +72,7 @@ namespace MainGame
             this.playerRect = rect;
             this.orientation = 000;
             this.flip = true;
+            this.playerCollision = new Rectangle(new Point(this.X,this.Y-(this.position.Height-40)),new Point(playerRect.Width,30));
         }
 
 

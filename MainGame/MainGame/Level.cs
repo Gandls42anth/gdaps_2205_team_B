@@ -103,6 +103,7 @@ namespace MainGame
                 guard = new bool[0, 0];
             }
         }
+        //The the Guard 2d array now has randomly placed "trues" where guards are supposed to be
 
 
 
