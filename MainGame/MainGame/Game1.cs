@@ -164,6 +164,11 @@ namespace MainGame
 
                     break;
 
+
+
+
+
+
                 case GameState.Hard:
                     if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
                     {
@@ -184,6 +189,7 @@ namespace MainGame
                         currentState = GameState.Title;
                     }
                     break;
+
 
                 default:
                     break;
