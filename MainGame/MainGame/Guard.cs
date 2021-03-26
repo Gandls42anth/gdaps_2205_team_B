@@ -9,11 +9,20 @@ namespace MainGame
 {
     class Guard
     {
+        // fields
         private Rectangle view;
         private int alert;
+
+        // constructor
         public Guard(Rectangle rect,Texture2D txt, int alert) : base(rect, txt)
         {
             this.alert = alert;
+        }
+
+        // guard movement
+        public void GuardMovement()
+        {
+
         }
     }
 }

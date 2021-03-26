@@ -10,32 +10,38 @@ namespace MainGame
     class Player
     {
         private bool caught;
-        private int speed;
         private int orientation;
         private Rectangle playerRect;
         private Texture2D playerTexture;
-        private Rectangle playerCollision;
-
         private bool flip;
         //Position Properties to help change values
 
-        public int X
+        public int X // player's x coord
         {
             get { return this.playerRect.X; }
             set
             {
                 this.playerRect = new Rectangle(new Point(value, this.playerRect.Y), this.playerRect.Size);
-                this.playerCollision = new Rectangle(new Point(value, this.playerRect.Y-(playerRect.Height - 40)), this.playerCollision.Size);
             }
         }
-        public int Y
+        public int Y // player's y coord
         {
             get { return this.playerRect.Y; }
             set
             {
                 this.playerRect = new Rectangle(new Point(this.playerRect.X, value), this.playerRect.Size);
-                this.playerCollision = new Rectangle(new Point(this.playerCollision.X, this.playerRect.Y - (playerRect.Height - 40)), this.playerCollision.Size);
             }
+        }
+
+        // player's dimensions
+        public int PlayerHeight
+        {
+            get { return playerRect.Height; }
+        }
+
+        public int PlayerWidth
+        {
+            get { return playerRect.Width; }
         }
 
         //This represents the orientation in degrees, Clockwise, from  the +x axis
@@ -72,7 +78,6 @@ namespace MainGame
             this.playerRect = rect;
             this.orientation = 000;
             this.flip = true;
-            this.playerCollision = new Rectangle(new Point(this.X,this.Y-(this.position.Height-40)),new Point(playerRect.Width,30));
         }
 
 
@@ -86,9 +91,8 @@ namespace MainGame
             {
                 sb.Draw(playerTexture, playerRect, null, Color.White, (float)(((double)orientation/180)*Math.PI), new Vector2(50, 50), SpriteEffects.FlipHorizontally, 0f);
             }
-            
-            
-
         }
+
+      
     }
 }

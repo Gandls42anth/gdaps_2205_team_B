@@ -24,7 +24,6 @@ namespace MainGame
         private GameState currentState;
 
         private Player player;
-        // title fields
         private SpriteFont backLayer;
         private SpriteFont frontLayer;
         private SpriteFont Subtitle;
@@ -50,7 +49,6 @@ namespace MainGame
         {
             // TODO: Add your initialization logic here
 
-            // title screen
             c = 0;
             shift = 0;
             Colors = new List<Color>(6) { Color.Red, Color.DarkOrange, Color.Yellow, Color.Green, Color.Blue, Color.Violet };
@@ -65,12 +63,15 @@ namespace MainGame
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            // title screen
+
+            // for title screen
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             this.backLayer = this.Content.Load<SpriteFont>("File");
             this.frontLayer = this.Content.Load<SpriteFont>("FrontLayer");
             this.Subtitle = this.Content.Load<SpriteFont>("Subtitle");
             this.Normal = this.Content.Load<SpriteFont>("Normal");
+
+            // for in game
             this.GiraffeSprite = this.Content.Load<Texture2D>("GiraffeStatic");
             this.GiraffeSpriteWalk = this.Content.Load<Texture2D>("GiraffeWalk");
 
@@ -116,6 +117,8 @@ namespace MainGame
                 //This Section handless the state logic
                 //For the Normal, Hard and speedrun Modes
                 case GameState.Normal:
+
+                    // movement
                     if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
                     {
                         currentState = GameState.Title;
@@ -154,6 +157,10 @@ namespace MainGame
                             player.X -= 3;
                         }
                     }
+
+                    // collision detection
+
+
 
                     break;
 
@@ -212,12 +219,15 @@ namespace MainGame
                     break;
 
                 case GameState.Normal:
+
                     _spriteBatch.DrawString(
                         frontLayer, 
-                        string.Format("X:{0}, Y:{1}, \nWidth:{2},Height:{3}",player.X,player.Y,player.Position.Width,player.Position.Height), 
+                        string.Format("X:{0}, Y:{1}, " +
+                        "\nWidth:{2},Height:{3}", player.X, player.Y, player.PlayerWidth, player.PlayerHeight), 
                         new Vector2(35, 7),
                         Color.OrangeRed
                         );
+
                     _spriteBatch.DrawString(Normal, string.Format("To exit, press enter"), new Vector2(35, 307), Color.Yellow);
                     player.Draw(_spriteBatch);
                     break;
