@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MainGame
 {
-    class Player
+    class Player : GameObject
     {
         private bool caught;
         private int orientation;

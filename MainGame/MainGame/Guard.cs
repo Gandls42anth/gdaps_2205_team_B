@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MainGame
 {
-    class Guard
+    class Guard : GameObject
     {
         // fields
         private Rectangle view;
