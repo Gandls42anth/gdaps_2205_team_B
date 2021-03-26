@@ -25,7 +25,7 @@ namespace MainGame
             set
             {
                 this.playerRect = new Rectangle(new Point(value, this.playerRect.Y), this.playerRect.Size);
-                this.playerCollision = new Rectangle(new Point(value, this.playerRect.Y-(playerRect.Height - 40)), this.playerCollision.Size);
+                this.playerCollision = new Rectangle(new Point(this.playerRect.X, this.playerRect.Y-(playerRect.Height - 40)), this.playerCollision.Size);
             }
         }
         public int Y
