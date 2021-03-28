@@ -38,6 +38,18 @@ namespace MainGame
 
         private Rectangle GiraffeRectangle;
 
+        private List<Guard> Guards;
+        private Texture2D GuardSprite;
+        private Rectangle GuardRectangle;
+        private Guard guard1;
+
+
+        private Texture2D background;
+
+        //This is for the game over screen
+        private Texture2D deadGiraffeSprite;
+        private Rectangle deadGiraffeRectangle;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -77,6 +89,18 @@ namespace MainGame
 
             GiraffeRectangle = new Rectangle(300, 200, (int)GiraffeSprite.Width/4, (int)GiraffeSprite.Height/4);
             this.player = new Player(GiraffeRectangle, this.GiraffeSprite);
+
+            //Background
+            this.background = this.Content.Load<Texture2D>("roadLong");
+
+            //Guards
+            this.GuardSprite = this.Content.Load<Texture2D>("guardplaceholder");
+            GuardRectangle = new Rectangle(550, 200, (int)GuardSprite.Width/2, (int)GuardSprite.Height/2);
+            guard1 = new Guard(GuardRectangle, this.GuardSprite, 3);
+
+            //Dead Giraffe
+            deadGiraffeSprite = this.Content.Load<Texture2D>("GiraffeDead");
+            deadGiraffeRectangle = new Rectangle(500, 200, deadGiraffeSprite.Width / 4, deadGiraffeSprite.Height / 4);
 
             currentState = GameState.Title;
         }
@@ -161,6 +185,14 @@ namespace MainGame
                     // collision detection
 
 
+                    if (guard1.X > 0)
+                    {
+                        guard1.X -=1;
+                    }
+
+                    Contact();
+                    
+                    
 
                     break;
 
@@ -203,7 +235,7 @@ namespace MainGame
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-
+            
             _spriteBatch.Begin();
 
             switch (currentState)
@@ -225,7 +257,7 @@ namespace MainGame
                     break;
 
                 case GameState.Normal:
-
+                    _spriteBatch.Draw(background, new Rectangle(0,0,800,480), Color.White);
                     _spriteBatch.DrawString(
                         frontLayer, 
                         string.Format("X:{0}, Y:{1}, " +
@@ -236,6 +268,8 @@ namespace MainGame
 
                     _spriteBatch.DrawString(Normal, string.Format("To exit, press enter"), new Vector2(35, 307), Color.Yellow);
                     player.Draw(_spriteBatch);
+                    guard1.Draw(_spriteBatch);
+                    
                     break;
 
                 case GameState.Hard:
@@ -251,8 +285,9 @@ namespace MainGame
                     break;
 
                 case GameState.GameOver:
-                    _spriteBatch.DrawString(frontLayer, "Placeholder for \nGameover mode", new Vector2(35, 7), Color.OrangeRed);
+                    _spriteBatch.DrawString(frontLayer, "GAME OVER", new Vector2(35, 7), Color.OrangeRed);
                     _spriteBatch.DrawString(Normal, "To exit, press enter", new Vector2(35, 307), Color.Yellow);
+                    _spriteBatch.Draw(deadGiraffeSprite, deadGiraffeRectangle, Color.White);
                     break;
 
                 default:
@@ -276,6 +311,43 @@ namespace MainGame
         protected bool SingleMousePress(ButtonState b, MouseState ms, MouseState prevms)
         {
             return (ms.LeftButton != b && prevms.LeftButton == b);
+        }
+
+        //This method checks for if the player makes contact with any guards
+        private void Contact()
+        {
+            if (player.Y == guard1.Y)
+            {
+                if (player.X > guard1.X)
+                {
+                    if (player.X -guard1.X < 15)
+                    {
+                        currentState = GameState.GameOver;
+                    }
+                }
+
+                if (guard1.X > player.X)
+                {
+                    if (guard1.X - player.X < 100)
+                    {
+                        currentState = GameState.GameOver;
+                    }
+                }
+
+                if (player.X == guard1.X)
+                {
+                    currentState = GameState.GameOver;
+                }
+
+
+            }
+
+            /*
+            if (player.Position.Intersects(guard1.Position) == true)
+            {
+                currentState = GameState.GameOver;
+            }
+            */
         }
     }
 }
