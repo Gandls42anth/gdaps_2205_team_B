@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace MainGame
 {
@@ -34,7 +35,11 @@ namespace MainGame
         private KeyboardState KBS;
         private KeyboardState prevKBS;
         private int c;
+        private int playTime;
         private int shift;
+        private StreamReader reader;
+        private StreamWriter writer;
+        private bool written;
 
         private Rectangle GiraffeRectangle;
 
@@ -60,9 +65,10 @@ namespace MainGame
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            playTime = 0;
             c = 0;
             shift = 0;
+            written = false;
             Colors = new List<Color>(6) { Color.Red, Color.DarkOrange, Color.Yellow, Color.Green, Color.Blue, Color.Violet };
             this.prevKBS = new KeyboardState();
 
@@ -116,7 +122,7 @@ namespace MainGame
             switch (currentState)
             {
                 case GameState.Title:
-
+                    written = false;
                     if (c % 30 == 0)
                     {
                         shift++;
@@ -141,6 +147,7 @@ namespace MainGame
                 //This Section handless the state logic
                 //For the Normal, Hard and speedrun Modes
                 case GameState.Normal:
+                    playTime += 1;
 
                     // movement
                     if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
@@ -202,6 +209,7 @@ namespace MainGame
 
 
                 case GameState.Hard:
+                    playTime += 1;
                     if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
                     {
                         currentState = GameState.Title;
@@ -217,6 +225,13 @@ namespace MainGame
 
                 case GameState.GameOver:
                     c++;
+                    if (!written)
+                    {
+                        written = true;
+                        writer = new StreamWriter("Scores");
+                        writer.Write(playTime / 60 + "s");
+                        writer.Close();
+                    }
                     if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
                     {
                         currentState = GameState.Title;
