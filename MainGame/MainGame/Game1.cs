@@ -216,6 +216,7 @@ namespace MainGame
                     break;
 
                 case GameState.GameOver:
+                    c++;
                     if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
                     {
                         currentState = GameState.Title;
@@ -285,9 +286,11 @@ namespace MainGame
                     break;
 
                 case GameState.GameOver:
+                    GraphicsDevice.Clear(Color.Black);
                     _spriteBatch.DrawString(frontLayer, "GAME OVER", new Vector2(35, 7), Color.OrangeRed);
                     _spriteBatch.DrawString(Normal, "To exit, press enter", new Vector2(35, 307), Color.Yellow);
-                    _spriteBatch.Draw(deadGiraffeSprite, deadGiraffeRectangle, Color.White);
+                    player.Orientation = c;
+                    player.Draw(_spriteBatch);
                     break;
 
                 default:
