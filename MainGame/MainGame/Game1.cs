@@ -93,7 +93,7 @@ namespace MainGame
             this.GiraffeSprite = this.Content.Load<Texture2D>("GiraffeStatic");
             this.GiraffeSpriteWalk = this.Content.Load<Texture2D>("GiraffeWalk");
 
-            GiraffeRectangle = new Rectangle(300, 200, (int)GiraffeSprite.Width/4, (int)GiraffeSprite.Height/4);
+            GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width/4, (int)GiraffeSprite.Height/4);
             this.player = new Player(GiraffeRectangle, this.GiraffeSprite);
 
             //Background
@@ -101,7 +101,7 @@ namespace MainGame
 
             //Guards
             this.GuardSprite = this.Content.Load<Texture2D>("guardplaceholder");
-            GuardRectangle = new Rectangle(550, 200, (int)GuardSprite.Width/2, (int)GuardSprite.Height/2);
+            GuardRectangle = new Rectangle(750, 305, (int)GuardSprite.Width/2, (int)GuardSprite.Height/2);
             guard1 = new Guard(GuardRectangle, this.GuardSprite, 3);
 
             //Dead Giraffe
@@ -191,13 +191,15 @@ namespace MainGame
 
                     // collision detection
 
-
                     if (guard1.X > 0)
                     {
                         guard1.X -=1;
                     }
 
-                    Contact();
+                    if (guard1.CollisionRectangle.Intersects(player.CollisionBox))
+                    {
+                        currentState = GameState.GameOver;
+                    }
                     
                     
 
@@ -276,8 +278,8 @@ namespace MainGame
                     _spriteBatch.Draw(background, new Rectangle(0,0,800,480), Color.White);
                     _spriteBatch.DrawString(
                         frontLayer, 
-                        string.Format("X:{0}, Y:{1}, " +
-                        "\nWidth:{2},Height:{3}", player.X, player.Y, player.PlayerWidth, player.PlayerHeight), 
+                        string.Format("X:{0}, Y:{1}, "
+                        , player.X, player.Y), 
                         new Vector2(35, 7),
                         Color.OrangeRed
                         );

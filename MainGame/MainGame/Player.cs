@@ -17,13 +17,19 @@ namespace MainGame
         private Rectangle playerCollision;
         //Position Properties to help change values
 
+
+
+        public Rectangle CollisionBox
+        {
+            get { return this.playerCollision; }
+        }
         public int X // player's x coord
         {
             get { return this.playerRect.X; }
             set
             {
                 this.playerRect = new Rectangle(new Point(value, this.playerRect.Y), this.playerRect.Size);
-                this.playerCollision = new Rectangle(new Point(this.playerRect.X, this.playerRect.Y - (playerRect.Height - 40)), this.playerCollision.Size);
+                this.playerCollision = new Rectangle(new Point(this.playerRect.X+60, this.playerRect.Y + (playerRect.Height - 40)), this.playerCollision.Size);
             }
         }
         public int Y // player's y coord
@@ -32,7 +38,7 @@ namespace MainGame
             set
             {
                 this.playerRect = new Rectangle(new Point(this.playerRect.X, value), this.playerRect.Size);
-                this.playerCollision = new Rectangle(new Point(this.playerCollision.X, this.playerRect.Y - (playerRect.Height - 40)), this.playerCollision.Size);
+                this.playerCollision = new Rectangle(new Point(this.playerRect.X+60, this.playerRect.Y + (playerRect.Height - 40)), this.playerCollision.Size);
             }
         }
 
@@ -82,7 +88,7 @@ namespace MainGame
             this.orientation = 000;
             this.flip = true;
 
-            this.playerCollision = new Rectangle(new Point(this.X, this.Y - (playerRect.Height - 40)), new Point(playerRect.Width, 30));
+            this.playerCollision = new Rectangle(new Point(this.X+60, this.Y + (playerRect.Height - 40)), new Point(50, 30));
         }
 
 
@@ -96,6 +102,7 @@ namespace MainGame
             {
                 sb.Draw(playerTexture, playerRect, null, Color.White, (float)(((double)orientation/180)*Math.PI), new Vector2(50, 50), SpriteEffects.FlipHorizontally, 0f);
             }
+            sb.Draw(playerTexture, playerCollision, Color.White);
         }
 
       

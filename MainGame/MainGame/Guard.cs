@@ -23,6 +23,7 @@ namespace MainGame
             this.guardTexture = txt;
             this.guardRect = rect;
             this.alert = alert;
+            this.guardCollision = new Rectangle(new Point(guardRect.X-50,guardRect.Y), new Point(30,50));
         }
 
         public int X
@@ -32,7 +33,7 @@ namespace MainGame
             set
             {
                 this.guardRect = new Rectangle(new Point(value, this.guardRect.Y), this.guardRect.Size);
-                //this.guardCollision = new Rectangle(new Point(this.guardRect.X, this.guardRect.Y - (guardRect.Height - 40)), this.guardCollision.Size);
+                this.guardCollision = new Rectangle(new Point(guardRect.X - 50, guardRect.Y), new Point(30, 50));
             }
         }
 
@@ -43,6 +44,7 @@ namespace MainGame
             set
             {
                 this.guardRect = new Rectangle(new Point(value, this.guardRect.X), this.guardRect.Size);
+                this.guardCollision = new Rectangle(new Point(guardRect.X - 50, guardRect.Y), new Point(30, 50));
             }
         }
 
@@ -71,12 +73,18 @@ namespace MainGame
 
         }
 
+        public Rectangle CollisionRectangle
+        {
+            get { return this.guardCollision; }
+        }
+
         public void Draw(SpriteBatch sb)
         {
 
             //sb.Draw(playerTexture, playerRect, null, Color.White, (float)(((double)orientation / 180) * Math.PI), new Vector2(50, 50), SpriteEffects.None, 0f);
 
             sb.Draw(guardTexture, guardRect, null, Color.White, (float)(((double)orientation / 180) * Math.PI), new Vector2(50,50), SpriteEffects.None, 0f);
+            sb.Draw(guardTexture, CollisionRectangle, Color.White);
             
         }
     }
