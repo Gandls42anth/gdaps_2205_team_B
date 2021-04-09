@@ -107,6 +107,18 @@ namespace MainGame
 
 
 
+        public void Draw(SpriteBatch sb)
+        {
+            //This for loop allows for almost infinitely large levels to be drawn, by redrawing the background level sprite  and shifting the x
+            //value over and over
+            for(int i = 0; i < LevelNum; i++)
+            {
+                sb.Draw(this.texture, new Rectangle(new Point(this.position.X + this.position.Width*i,this.position.Y), this.position.Size),Color.White);
+            }
+        }
+
+
+
 
 
 
