@@ -93,16 +93,11 @@ namespace MainGame
             this.GiraffeSprite = this.Content.Load<Texture2D>("GiraffeStatic");
             this.GiraffeSpriteWalk = this.Content.Load<Texture2D>("GiraffeWalk");
 
-            GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width/4, (int)GiraffeSprite.Height/4);
-            this.player = new Player(GiraffeRectangle, this.GiraffeSprite);
-
             //Background
             this.background = this.Content.Load<Texture2D>("roadLong");
 
             //Guards
             this.GuardSprite = this.Content.Load<Texture2D>("guardplaceholder");
-            GuardRectangle = new Rectangle(750, 305, (int)GuardSprite.Width/2, (int)GuardSprite.Height/2);
-            guard1 = new Guard(GuardRectangle, this.GuardSprite, 3);
 
             //Dead Giraffe
             deadGiraffeSprite = this.Content.Load<Texture2D>("GiraffeDead");
@@ -132,6 +127,10 @@ namespace MainGame
                     if (SingleKeyPress(Keys.N, KBS, prevKBS))
                     {
                         currentState = GameState.Normal;
+                        GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width / 4, (int)GiraffeSprite.Height / 4);
+                        GuardRectangle = new Rectangle(750, 305, (int)GuardSprite.Width / 2, (int)GuardSprite.Height / 2);
+                        guard1 = new Guard(GuardRectangle, this.GuardSprite, 3);
+                        this.player = new Player(GiraffeRectangle, this.GiraffeSprite);
                     }
                     else if (SingleKeyPress(Keys.H, KBS, prevKBS))
                     {
