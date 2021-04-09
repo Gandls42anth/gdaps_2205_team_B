@@ -13,6 +13,7 @@ namespace MainGame
         //This is the level class, its a gameobject that represents an entire level
         private GameState GS;
         private int LevelNum;
+        List<Guard> guardList;
         
         //This represents a 2d  array of where guard should be in a level
         //Its first value is always 5 since thats the number of rows
