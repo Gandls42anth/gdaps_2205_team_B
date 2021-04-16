@@ -19,13 +19,38 @@ namespace MainGame
         //Its first value is always 5 since thats the number of rows
         //The second value will be dependent on the length of the level, determined by the number of level and the difficulty
         private bool[,] guard;
+
+        //Helper Properties
+        public int X
+        {
+            get { return this.position.X; }
+            set
+            {
+                this.position.X = value;
+            }
+        }
+        public int Y
+        {
+            get { return this.position.Y; }
+            set
+            {
+                this.position.Y = value;
+            }
+        }
+
+        public List<Guard> Guards
+        {
+            get { return this.guardList; }
+        }
+
         
-        public Level(GameState gs,int levelNum, Texture2D txt,Rectangle rect) : base(rect,txt)
+        public Level(GameState gs,int levelNum, Texture2D txt,Rectangle rect,Guard baseGuard) : base(rect,txt)
         {
             Random randy = new Random();
             this.GS = gs;
             this.LevelNum = levelNum;
             bool curAdd = false;
+            guardList = new List<Guard>();
 
             //This is where the random generation logic is handled for levels
             if (gs == GameState.Normal)
@@ -47,12 +72,19 @@ namespace MainGame
                             //(Since all of them on different rows would create an easier game)
                             if (guards != 0)
                             {
-                                curAdd = randy.Next((positionsNum * 5) - (i * 5) - p) < guards;
+                                curAdd = randy.Next(guard.Length - (i * 5) - p) < guards;
                                 guard[p, i] = curAdd;
                                 if (curAdd)
                                 {
                                     guards -= 1;
                                     guardsAdded += 1;
+                                    guardList.Add(new Guard
+                                        (new Rectangle
+                                        (this.Position.X + this.texture.Width + ((int)this.Texture.Width / 3 * i),
+                                        50 * p,
+                                        (int)baseGuard.GuardWidth, 
+                                        (int)baseGuard.GuardHeight), 
+                                        baseGuard.Texture, levelNum));
                                 }
                             }
                             else
@@ -112,10 +144,25 @@ namespace MainGame
         {
             //This for loop allows for almost infinitely large levels to be drawn, by redrawing the background level sprite  and shifting the x
             //value over and over
-            for(int i = 0; i < LevelNum; i++)
+            for(int i = 0; i < 5+LevelNum; i++)
             {
                 sb.Draw(this.texture, new Rectangle(new Point(this.position.X + this.position.Width*i,this.position.Y), this.position.Size),Color.White);
             }
+            for(int p = 0; p < guardList.Count; p++)
+            {
+                guardList[p].Draw(sb);
+            }
+        }
+
+
+        public void Move(int speed = 5)
+        {
+            for(int i = 0; i < guardList.Count; i++)
+            {
+                guardList[i].X -= speed;
+            }
+
+            this.X -= speed;
         }
 
 

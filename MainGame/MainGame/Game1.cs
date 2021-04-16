@@ -40,6 +40,7 @@ namespace MainGame
         private StreamReader reader;
         private StreamWriter writer;
         private bool written;
+        private Level level;
 
         private Rectangle GiraffeRectangle;
 
@@ -131,6 +132,8 @@ namespace MainGame
                         GuardRectangle = new Rectangle(750, 305, (int)GuardSprite.Width / 2, (int)GuardSprite.Height / 2);
                         guard1 = new Guard(GuardRectangle, this.GuardSprite, 3);
                         this.player = new Player(GiraffeRectangle, this.GiraffeSprite);
+                        //Attempting first level creation
+                        this.level = new Level(GameState.Normal, 0, background, new Rectangle(0, 100, (int)background.Width/2, (int)background.Height/2), guard1);
                     }
                     else if (SingleKeyPress(Keys.H, KBS, prevKBS))
                     {
@@ -147,7 +150,7 @@ namespace MainGame
                 //For the Normal, Hard and speedrun Modes
                 case GameState.Normal:
                     playTime += 1;
-
+                    level.Move(2);
                     // movement
                     if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
                     {
@@ -190,6 +193,7 @@ namespace MainGame
 
                     // collision detection
 
+                    /*
                     if (guard1.X > 0)
                     {
                         guard1.X -=1;
@@ -199,6 +203,7 @@ namespace MainGame
                     {
                         currentState = GameState.GameOver;
                     }
+                    */
                     
                     
 
@@ -274,18 +279,17 @@ namespace MainGame
                     break;
 
                 case GameState.Normal:
-                    _spriteBatch.Draw(background, new Rectangle(0,0,800,480), Color.White);
+                    level.Draw(_spriteBatch);
                     _spriteBatch.DrawString(
                         frontLayer, 
-                        string.Format("X:{0}, Y:{1}, "
-                        , player.X, player.Y), 
+                        string.Format("X:{0}, Y:{1}, \n GuardCount: {2} "
+                        , player.X, player.Y,level.Guards.Count), 
                         new Vector2(35, 7),
                         Color.OrangeRed
                         );
 
                     _spriteBatch.DrawString(Normal, string.Format("To exit, press enter"), new Vector2(35, 307), Color.Yellow);
                     player.Draw(_spriteBatch);
-                    guard1.Draw(_spriteBatch);
                     
                     break;
 
