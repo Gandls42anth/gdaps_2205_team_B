@@ -151,45 +151,16 @@ namespace MainGame
                 case GameState.Normal:
                     playTime += 1;
                     level.Move(2);
-                    // movement
+
+                    // player movement
+                    player.Update(gameTime);
+
+                    // temporary for now, until we can get the full game working
                     if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
                     {
                         currentState = GameState.Title;
                     }
-                    if (SingleKeyPress(Keys.W, KBS, prevKBS))
-                    {
-                        //This is the top barrier
-                        if (player.Y > 50)
-                        {
-                            player.Y = this.player.Y - 50;
-                        }
-                    }
-                    if (SingleKeyPress(Keys.S, KBS, prevKBS))
-                    {
-                        //This is the bottom barrier
-                        if (player.Y < 250)
-                        {
-                            player.Y = this.player.Y + 50;
-                        }
-                    }
-                    if (KeyHold(Keys.D, KBS, prevKBS))
-                    {
-                        player.Flip = true;
-                        //Front Barrier
-                        if (player.X < 600)
-                        {
-                            player.X += 3;
-                        }
-                    }
-                    if (KeyHold(Keys.A, KBS, prevKBS))
-                    {
-                        player.Flip = false;
-                        //Back Barrier
-                        if (player.X > 30)
-                        {
-                            player.X -= 3;
-                        }
-                    }
+                    
 
                     // collision detection
 
@@ -205,17 +176,15 @@ namespace MainGame
                     }
                     */
                     
-                    
-
                     break;
-
-
-
-
-
 
                 case GameState.Hard:
                     playTime += 1;
+
+                    // player movement
+                    player.Update(gameTime);
+
+                    // temporary for now, until we can get the full game working
                     if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
                     {
                         currentState = GameState.Title;
@@ -223,6 +192,12 @@ namespace MainGame
                     break;
 
                 case GameState.Speedrun:
+                    playTime += 1;
+
+                    // player movement
+                    player.Update(gameTime);
+
+                    // temporary for now, until we can get the full game working
                     if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
                     {
                         currentState = GameState.Title;

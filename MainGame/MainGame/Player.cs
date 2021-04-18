@@ -9,15 +9,16 @@ namespace MainGame
 {
     class Player : GameObject
     {
+        // fields
         private bool caught;
         private int orientation;
         private Rectangle playerRect;
         private Texture2D playerTexture;
         private bool flip;
         private Rectangle playerCollision;
+        private KeyboardState KBS;
+        private KeyboardState prevKBS;
         //Position Properties to help change values
-
-
 
         public Rectangle CollisionBox
         {
@@ -81,6 +82,7 @@ namespace MainGame
             }
         }
 
+        // constructor
         public Player(Rectangle rect,Texture2D txt) : base(rect, txt)
         {
             this.playerTexture = txt;
@@ -91,7 +93,7 @@ namespace MainGame
             this.playerCollision = new Rectangle(new Point(this.X+60, this.Y + (playerRect.Height - 40)), new Point(50, 30));
         }
 
-
+        // draw
         public void Draw(SpriteBatch sb)
         {
             
@@ -105,6 +107,59 @@ namespace MainGame
             sb.Draw(playerTexture, playerCollision, Color.White);
         }
 
-      
+        // key input help; method names are self explanatory
+        protected bool SingleKeyPress(Keys key, KeyboardState kbs, KeyboardState prevkbs)
+        {
+            return (kbs.IsKeyUp(key) && prevkbs.IsKeyDown(key));
+        }
+
+        protected bool KeyHold(Keys key, KeyboardState kbs, KeyboardState prevkbs)
+        {
+            return (kbs.IsKeyDown(key) && prevkbs.IsKeyDown(key));
+        }
+
+        protected bool SingleMousePress(ButtonState b, MouseState ms, MouseState prevms)
+        {
+            return (ms.LeftButton != b && prevms.LeftButton == b);
+        }
+
+        // update (for player movement)
+        public void Update(GameTime gameTime)
+        {
+            if (SingleKeyPress(Keys.W, KBS, prevKBS)) // move up
+            {
+                //This is the top barrier
+                if (this.Y > 50)
+                {
+                    this.Y = this.Y - 50;
+                }
+            }
+            if (SingleKeyPress(Keys.S, KBS, prevKBS)) // move down
+            {
+                //This is the bottom barrier
+                if (this.Y < 250)
+                {
+                    this.Y = this.Y + 50;
+                }
+            }
+            if (KeyHold(Keys.D, KBS, prevKBS)) // right
+            {
+                Flip = true;
+                //Front Barrier
+                if (this.X < 600)
+                {
+                    this.X += 3;
+                }
+            }
+            if (KeyHold(Keys.A, KBS, prevKBS)) // left
+            {
+                Flip = false;
+                //Back Barrier
+                if (this.X > 30)
+                {
+                    this.X -= 3;
+                }
+            }
+        }
     }
 }
