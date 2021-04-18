@@ -55,9 +55,8 @@ namespace MainGame
             //This is where the random generation logic is handled for levels
             if (gs == GameState.Normal)
             {
-                int guards = randy.Next(5 + levelNum * 2);
-                int guardsAdded = 0;
-                int positionsNum = (5 + levelNum) * 3;
+                int guards = randy.Next(3 + levelNum,5 + levelNum * 2);
+                int positionsNum = (3 + levelNum) * 3;
                 guard = new bool[5, positionsNum];
                 for (int i = 0; i < positionsNum; i++)
                 {
@@ -72,18 +71,18 @@ namespace MainGame
                             //(Since all of them on different rows would create an easier game)
                             if (guards != 0)
                             {
-                                curAdd = randy.Next(guard.Length - (i * 5) - p) < guards;
+                                int positionsLeft = guard.Length - (i*5) - p;
+                                curAdd = randy.Next(positionsLeft) < guards;
                                 guard[p, i] = curAdd;
                                 if (curAdd)
                                 {
                                     guards -= 1;
-                                    guardsAdded += 1;
                                     guardList.Add(new Guard
                                         (new Rectangle
-                                        (this.Position.X + this.texture.Width + ((int)this.Texture.Width / 3 * i),
-                                        50 * p,
+                                        (this.position.X + this.position.Width + ((int)this.position.Width / 3 * i),
+                                        155 + 50 * p,
                                         (int)baseGuard.GuardWidth, 
-                                        (int)baseGuard.GuardHeight), 
+                                        (int)baseGuard.GuardHeight),
                                         baseGuard.Texture, levelNum));
                                 }
                             }
@@ -140,13 +139,14 @@ namespace MainGame
 
 
 
-        public void Draw(SpriteBatch sb)
+        public void Draw(SpriteBatch sb,SpriteFont sf)
         {
             //This for loop allows for almost infinitely large levels to be drawn, by redrawing the background level sprite  and shifting the x
             //value over and over
             for(int i = 0; i < 5+LevelNum; i++)
             {
                 sb.Draw(this.texture, new Rectangle(new Point(this.position.X + this.position.Width*i,this.position.Y), this.position.Size),Color.White);
+                sb.DrawString(sf,string.Format("{0}",i),new Vector2(this.position.X + this.position.Width*i,this.position.Y),Color.Red);
             }
             for(int p = 0; p < guardList.Count; p++)
             {

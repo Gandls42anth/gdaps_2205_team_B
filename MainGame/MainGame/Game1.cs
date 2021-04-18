@@ -255,16 +255,16 @@ namespace MainGame
                     break;
 
                 case GameState.Normal:
-                    level.Draw(_spriteBatch);
+                    level.Draw(_spriteBatch,Normal);
                     _spriteBatch.DrawString(
                         frontLayer, 
-                        string.Format("X:{0}, Y:{1}, \n GuardCount: {2} "
-                        , player.X, player.Y,level.Guards.Count), 
+                        string.Format("PlayerCollision: {0},{1} "
+                        , player.CollisionBox.X, player.CollisionBox.Y,level.Guards.Count), 
                         new Vector2(35, 7),
                         Color.OrangeRed
                         );
 
-                    _spriteBatch.DrawString(Normal, string.Format("To exit, press enter"), new Vector2(35, 307), Color.Yellow);
+                    _spriteBatch.DrawString(Normal, string.Format("To exit, press enter"), new Vector2(35, 435), Color.Yellow);
                     player.Draw(_spriteBatch);
                     
                     break;
