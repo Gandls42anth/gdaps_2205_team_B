@@ -10,7 +10,6 @@ namespace MainGame
     class Player : GameObject
     {
         // fields
-        private bool caught;
         private int orientation;
         private Rectangle playerRect;
         private Texture2D playerTexture;
@@ -63,7 +62,7 @@ namespace MainGame
                 orientation = value;
             }
         }
-        //Simple bool for flip/no flip
+        //Simple bool for whether or not to flip the sprite
         public bool Flip
         {
             get { return this.flip; }
@@ -97,10 +96,10 @@ namespace MainGame
         public void Draw(SpriteBatch sb)
         {
             
-            if (flip == false)
+            if (!flip)
             {
                 sb.Draw(playerTexture, playerRect, null, Color.White, (float)(((double)orientation/180)*Math.PI), new Vector2(50, 50), SpriteEffects.None, 0f);
-            }else if(flip == true)
+            }else if(flip)
             {
                 sb.Draw(playerTexture, playerRect, null, Color.White, (float)(((double)orientation/180)*Math.PI), new Vector2(50, 50), SpriteEffects.FlipHorizontally, 0f);
             }
@@ -161,5 +160,6 @@ namespace MainGame
                 }
             }
         }
+
     }
 }

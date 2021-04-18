@@ -155,6 +155,7 @@ namespace MainGame
                     // player movement
                     player.Update(gameTime);
 
+
                     // temporary for now, until we can get the full game working
                     if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
                     {
@@ -169,12 +170,12 @@ namespace MainGame
                     {
                         guard1.X -=1;
                     }
-
+                    */
                     if (guard1.CollisionRectangle.Intersects(player.CollisionBox))
                     {
                         currentState = GameState.GameOver;
                     }
-                    */
+                    
                     
                     break;
 
