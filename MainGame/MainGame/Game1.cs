@@ -21,7 +21,7 @@ namespace MainGame
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        // general fields
+        // fields
         private GameState currentState;
 
         private Player player;

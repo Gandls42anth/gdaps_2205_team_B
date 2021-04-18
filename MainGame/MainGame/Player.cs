@@ -117,20 +117,17 @@ namespace MainGame
             return (kbs.IsKeyDown(key) && prevkbs.IsKeyDown(key));
         }
 
-        protected bool SingleMousePress(ButtonState b, MouseState ms, MouseState prevms)
-        {
-            return (ms.LeftButton != b && prevms.LeftButton == b);
-        }
-
-        // update (for player movement)
+        // player movement
         public void Update(GameTime gameTime)
         {
+            KBS = Keyboard.GetState();
+
             if (SingleKeyPress(Keys.W, KBS, prevKBS)) // move up
             {
                 //This is the top barrier
                 if (this.Y > 50)
                 {
-                    this.Y = this.Y - 50;
+                    this.Y -= 50;
                 }
             }
             if (SingleKeyPress(Keys.S, KBS, prevKBS)) // move down
@@ -138,7 +135,7 @@ namespace MainGame
                 //This is the bottom barrier
                 if (this.Y < 250)
                 {
-                    this.Y = this.Y + 50;
+                    this.Y += 50;
                 }
             }
             if (KeyHold(Keys.D, KBS, prevKBS)) // right
@@ -159,6 +156,7 @@ namespace MainGame
                     this.X -= 3;
                 }
             }
+            prevKBS = Keyboard.GetState();
         }
 
     }

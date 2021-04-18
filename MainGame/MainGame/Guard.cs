@@ -72,7 +72,7 @@ namespace MainGame
 
         
         // guard movement; we only want them to move horizontally
-        public void GuardMovement()
+        public void GuardMovement(GameTime gameTime)
         {
             // move right/left 5 units depending on if they turned or not
             if (this.turn)
