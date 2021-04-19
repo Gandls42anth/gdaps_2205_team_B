@@ -135,7 +135,7 @@ namespace MainGame
                     {
                         currentState = GameState.Normal;
                         GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width /2 , (int)GiraffeSprite.Height/2);
-                        GuardRectangle = new Rectangle(750, 305, (int)GuardSprite.Width , (int)GuardSprite.Height );
+                        GuardRectangle = new Rectangle(750, 305, (int)GuardSprite.Width /2, (int)GuardSprite.Height/2 );
                         guard1 = new Guard(GuardRectangle, this.GuardSprite, 3, this.viewCone);
                         this.player = new Player(GiraffeRectangle, this.GiraffeSprite);
                         //Attempting first level creation
@@ -145,7 +145,7 @@ namespace MainGame
                     {
                         currentState = GameState.Hard;
                         GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width/2 , (int)GiraffeSprite.Height/2 );
-                        GuardRectangle = new Rectangle(750, 305, (int)GuardSprite.Width / 2, (int)GuardSprite.Height / 2);
+                        GuardRectangle = new Rectangle(750, 305, (int)GuardSprite.Width /2, (int)GuardSprite.Height /2);
                         guard1 = new Guard(GuardRectangle, this.GuardSprite, 3, this.viewCone);
                         this.player = new Player(GiraffeRectangle, this.GiraffeSprite);
                         //Attempting first level creation
@@ -155,7 +155,7 @@ namespace MainGame
                     else if (SingleKeyPress(Keys.S, KBS, prevKBS))
                     {
                         currentState = GameState.Speedrun;
-                        GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width / 4, (int)GiraffeSprite.Height / 4);
+                        GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width / 2, (int)GiraffeSprite.Height / 2);
                         GuardRectangle = new Rectangle(750, 305, (int)GuardSprite.Width / 2, (int)GuardSprite.Height / 2);
                         guard1 = new Guard(GuardRectangle, this.GuardSprite, 3, this.viewCone);
                         this.player = new Player(GiraffeRectangle, this.GiraffeSprite);
