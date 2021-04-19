@@ -17,8 +17,8 @@ namespace MainGame
         private Rectangle playerCollision;
         private KeyboardState KBS;
         private KeyboardState prevKBS;
-        //Position Properties to help change values
 
+        //Position Properties to help change values
         public Rectangle CollisionBox
         {
             get { return this.playerCollision; }

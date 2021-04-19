@@ -51,7 +51,7 @@ namespace MainGame
             get { return this.guardList; }
         }
 
-        
+        // constructor
         public Level(GameState gs,int levelNum, Texture2D txt,Rectangle rect,Guard baseGuard) : base(rect,txt)
         {
             Random randy = new Random();
@@ -69,40 +69,36 @@ namespace MainGame
                 guard = new bool[5, positionsNum];
                 for (int i = 0; i < positionsNum; i++)
                 {
-
-
+                    for (int p = 0; p < 5; p++)
                     {
-                        for (int p = 0; p < 5; p++)
+                        //This is a bit complicated to explain, but it allows for reasonable distribution of the guards, balancing
+                        //The amount of guards left with the amount of spots left on the map
+                        //It also favors creating them on different rows instead of different columns
+                        //(Since all of them on different rows would create an easier game)
+                        if (guards != 0)
                         {
-                            //This is a bit complicated to explain, but it allows for reasonable distribution of the guards, balancing
-                            //The amount of guards left with the amount of spots left on the map
-                            //It also favors creating them on different rows instead of different columns
-                            //(Since all of them on different rows would create an easier game)
-                            if (guards != 0)
+                            int positionsLeft = guard.Length - (i*5) - p;
+                            curAdd = randy.Next(positionsLeft) < guards;
+                            guard[p, i] = curAdd;
+                            if (curAdd)
                             {
-                                int positionsLeft = guard.Length - (i*5) - p;
-                                curAdd = randy.Next(positionsLeft) < guards;
-                                guard[p, i] = curAdd;
-                                if (curAdd)
-                                {
-                                    guards -= 1;
-                                    guardList.Add(new Guard
-                                        (new Rectangle
-                                        (this.position.X + this.position.Width + ((int)this.position.Width / 3 * i),
-                                        155 + 50 * p,
-                                        (int)baseGuard.GuardWidth, 
-                                        (int)baseGuard.GuardHeight),
-                                        baseGuard.Texture, 
-                                        levelNum,
-                                        baseGuard.ViewCone,
-                                        true));
-                                }
+                                guards -= 1;
+                                guardList.Add(new Guard
+                                    (new Rectangle
+                                    (this.position.X + this.position.Width + ((int)this.position.Width / 3 * i),
+                                    155 + 50 * p,
+                                    (int)baseGuard.GuardWidth, 
+                                    (int)baseGuard.GuardHeight),
+                                    baseGuard.Texture, 
+                                    levelNum,
+                                    baseGuard.ViewCone,
+                                    true));
                             }
-                            else
-                            //If we're all out of guard to give, the remaining spots will be set to false
-                            {
-                                guard[p, i] = false;
-                            }
+                        }
+                        else
+                        //If we're all out of guard to give, the remaining spots will be set to false
+                        {
+                            guard[p, i] = false;
                         }
                     }
                 }
@@ -114,7 +110,6 @@ namespace MainGame
                 guard = new bool[5, positionsNum];
                 for (int i = 0; i < positionsNum; i++)
                 {
-
 
                     {
                         for (int p = 0; p < 5; p++)
@@ -159,8 +154,7 @@ namespace MainGame
         }
         //The the Guard 2d array now has randomly placed "trues" where guards are supposed to be
 
-
-
+        // personalized draw method
         public void Draw(SpriteBatch sb,SpriteFont nsf,Texture2D  finishLine,SpriteFont finish)
         {
             //This for loop allows for almost infinitely large levels to be drawn, by redrawing the background level sprite  and shifting the x
@@ -178,7 +172,7 @@ namespace MainGame
             sb.DrawString(finish, "F\nI\nN\nI\nS\nH", new Vector2(this.X + this.position.Width * (5 + LevelNum) + 30,this.Y),Color.Black);
         }
 
-
+        // for guard movement
         public void Move(int speed = 5)
         {
             for(int i = 0; i < guardList.Count; i++)
@@ -189,6 +183,7 @@ namespace MainGame
             this.X -= speed;
         }
 
+        // collision detection for every guard
         public bool Collision(Player p)
         {
             for(int i = 0; i < guardList.Count; i++)
@@ -201,6 +196,7 @@ namespace MainGame
             return false;
         }
 
+        // player's win con
         public bool Win(Player p)
         {
             if (this.finishLine.Intersects(p.CollisionBox))
