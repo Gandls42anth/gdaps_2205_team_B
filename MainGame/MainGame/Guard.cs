@@ -15,10 +15,16 @@ namespace MainGame
         private Rectangle guardRect;
         private Texture2D guardTexture;
         private Rectangle guardCollision;
+        private Texture2D viewCone;
         private int orientation;
         private bool turn;
 
         // properties for fields
+        public Texture2D ViewCone
+        {
+            get { return this.viewCone; }
+        }
+
         public int X
         {
             get { return this.guardRect.X; }
@@ -51,6 +57,11 @@ namespace MainGame
             get { return guardRect.Width; }
         }
 
+        public Rectangle CollisionBox
+        {
+            get { return this.guardCollision; }
+        }
+
         public int Orientation
         {
             get { return this.orientation; }
@@ -61,13 +72,14 @@ namespace MainGame
         }
 
         // constructor
-        public Guard(Rectangle rect,Texture2D txt, int alert) : base(rect, txt)
+        public Guard(Rectangle rect,Texture2D txt,int alert,Texture2D viewCone, bool turn = false) : base(rect, txt)
         {
             this.guardTexture = txt;
             this.guardRect = rect;
             this.alert = alert;
             this.guardCollision = new Rectangle(new Point(guardRect.X-50,guardRect.Y), new Point(30,50));
-            this.turn = false;
+            this.turn = turn;
+            this.viewCone = viewCone;
         }
 
         
@@ -107,7 +119,7 @@ namespace MainGame
             {
                 sb.Draw(guardTexture, guardRect, null, Color.White, (float)(((double)orientation / 180) * Math.PI), new Vector2(50, 50), SpriteEffects.FlipHorizontally, 0f);
             }
-            sb.Draw(guardTexture, CollisionRectangle, Color.White);
+            sb.Draw(viewCone,CollisionRectangle, Color.Red * 0.3f);
         }
     }
 }

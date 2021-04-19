@@ -13,7 +13,8 @@ namespace MainGame
         Normal,
         Hard,
         Speedrun,
-        GameOver
+        GameOver,
+        Win
     }
 
     public class Game1 : Game
@@ -31,6 +32,8 @@ namespace MainGame
         private SpriteFont Normal;
         private Texture2D GiraffeSprite;
         private Texture2D GiraffeSpriteWalk;
+        private Texture2D viewCone;
+        private Texture2D finishLine;
         private List<Color> Colors;
         private KeyboardState KBS;
         private KeyboardState prevKBS;
@@ -91,6 +94,8 @@ namespace MainGame
             this.Normal = this.Content.Load<SpriteFont>("Normal");
 
             // for in game
+            this.viewCone = this.Content.Load<Texture2D>("unnamed");
+            this.finishLine = this.Content.Load<Texture2D>("1227835");
             this.GiraffeSprite = this.Content.Load<Texture2D>("GiraffeStatic");
             this.GiraffeSpriteWalk = this.Content.Load<Texture2D>("GiraffeWalk");
 
@@ -125,23 +130,37 @@ namespace MainGame
                     }
                     c++;
                     //This handles the switches between states
+                    //But first it handles initialization logic
                     if (SingleKeyPress(Keys.N, KBS, prevKBS))
                     {
                         currentState = GameState.Normal;
                         GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width / 4, (int)GiraffeSprite.Height / 4);
                         GuardRectangle = new Rectangle(750, 305, (int)GuardSprite.Width / 2, (int)GuardSprite.Height / 2);
-                        guard1 = new Guard(GuardRectangle, this.GuardSprite, 3);
+                        guard1 = new Guard(GuardRectangle, this.GuardSprite, 3, this.viewCone);
                         this.player = new Player(GiraffeRectangle, this.GiraffeSprite);
                         //Attempting first level creation
-                        this.level = new Level(GameState.Normal, 0, background, new Rectangle(0, 100, (int)background.Width/2, (int)background.Height/2), guard1);
+                        this.level = new Level(GameState.Normal, 0, background, new Rectangle(0, 100, (int)background.Width / 2, (int)background.Height / 2), guard1);
                     }
                     else if (SingleKeyPress(Keys.H, KBS, prevKBS))
                     {
                         currentState = GameState.Hard;
+                        GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width / 4, (int)GiraffeSprite.Height / 4);
+                        GuardRectangle = new Rectangle(750, 305, (int)GuardSprite.Width / 2, (int)GuardSprite.Height / 2);
+                        guard1 = new Guard(GuardRectangle, this.GuardSprite, 3, this.viewCone);
+                        this.player = new Player(GiraffeRectangle, this.GiraffeSprite);
+                        //Attempting first level creation
+                        this.level = new Level(GameState.Hard, 0, background, new Rectangle(0, 100, (int)background.Width / 2, (int)background.Height / 2), guard1);
+
                     }
                     else if (SingleKeyPress(Keys.S, KBS, prevKBS))
                     {
                         currentState = GameState.Speedrun;
+                        GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width / 4, (int)GiraffeSprite.Height / 4);
+                        GuardRectangle = new Rectangle(750, 305, (int)GuardSprite.Width / 2, (int)GuardSprite.Height / 2);
+                        guard1 = new Guard(GuardRectangle, this.GuardSprite, 3, this.viewCone);
+                        this.player = new Player(GiraffeRectangle, this.GiraffeSprite);
+                        //Attempting first level creation
+                        this.level = new Level(GameState.Normal, 0, background, new Rectangle(0, 100, (int)background.Width / 2, (int)background.Height / 2), guard1);
                     }
                     break;
 
@@ -161,47 +180,68 @@ namespace MainGame
                     {
                         currentState = GameState.Title;
                     }
-                    
 
-                    // collision detection
 
-                    /*
-                    if (guard1.X > 0)
+                    if (level.Win(player))
                     {
-                        guard1.X -=1;
+                        currentState = GameState.Win;
                     }
-                    */
-                    if (guard1.CollisionRectangle.Intersects(player.CollisionBox))
+                    if (level.Collision(player))
                     {
                         currentState = GameState.GameOver;
                     }
-                    
-                    
+
+
+
                     break;
 
                 case GameState.Hard:
                     playTime += 1;
+                    level.Move(2);
 
                     // player movement
                     player.Update(gameTime);
+
 
                     // temporary for now, until we can get the full game working
                     if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
                     {
                         currentState = GameState.Title;
+                    }
+
+
+                    if (level.Win(player))
+                    {
+                        currentState = GameState.Win;
+                    }
+                    if (level.Collision(player))
+                    {
+                        currentState = GameState.GameOver;
                     }
                     break;
 
                 case GameState.Speedrun:
                     playTime += 1;
+                    level.Move(2);
 
                     // player movement
                     player.Update(gameTime);
+
 
                     // temporary for now, until we can get the full game working
                     if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
                     {
                         currentState = GameState.Title;
+                    }
+
+
+                    if (level.Win(player))
+                    {
+                        currentState = GameState.Win;
+                    }
+                    if (level.Collision(player))
+                    {
+                        currentState = GameState.GameOver;
                     }
                     break;
 
@@ -219,7 +259,13 @@ namespace MainGame
                         currentState = GameState.Title;
                     }
                     break;
-
+                case GameState.Win:
+                    c++;
+                    if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
+                    {
+                        currentState = GameState.Title;
+                    }
+                    break;
 
                 default:
                     break;
@@ -255,11 +301,10 @@ namespace MainGame
                     break;
 
                 case GameState.Normal:
-                    level.Draw(_spriteBatch,Normal);
+                    level.Draw(_spriteBatch,Normal,finishLine,this.Subtitle);
                     _spriteBatch.DrawString(
                         frontLayer, 
-                        string.Format("PlayerCollision: {0},{1} "
-                        , player.CollisionBox.X, player.CollisionBox.Y,level.Guards.Count), 
+                        string.Format("Total Guards: {0}",level.Guards.Count), 
                         new Vector2(35, 7),
                         Color.OrangeRed
                         );
@@ -270,21 +315,43 @@ namespace MainGame
                     break;
 
                 case GameState.Hard:
-                    _spriteBatch.DrawString(frontLayer, "Placeholder for \nHard mode", new Vector2(35, 7), Color.OrangeRed);
-                    _spriteBatch.DrawString(Normal, "To exit, press enter", new Vector2(35, 307), Color.Yellow);
-                    _spriteBatch.Draw(GiraffeSprite, GiraffeRectangle, Color.White);
-                    
+                    level.Draw(_spriteBatch, Normal, finishLine, this.Subtitle);
+                    _spriteBatch.DrawString(
+                        frontLayer,
+                        string.Format("Total Guards: {0}", level.Guards.Count),
+                        new Vector2(35, 7),
+                        Color.OrangeRed
+                        );
+
+                    _spriteBatch.DrawString(Normal, string.Format("To exit, press enter"), new Vector2(35, 435), Color.Yellow);
+                    player.Draw(_spriteBatch);
+
                     break;
 
                 case GameState.Speedrun:
-                    _spriteBatch.DrawString(frontLayer, "Placeholder for \nSpeedrun mode", new Vector2(35, 7), Color.OrangeRed);
-                    _spriteBatch.DrawString(Normal, "To exit, press enter", new Vector2(35, 307), Color.Yellow);
+                    level.Draw(_spriteBatch, Normal, finishLine, this.Subtitle);
+                    _spriteBatch.DrawString(
+                        frontLayer,
+                        string.Format("Total Guards: {0}", level.Guards.Count),
+                        new Vector2(35, 7),
+                        Color.OrangeRed
+                        );
+
+                    _spriteBatch.DrawString(Normal, string.Format("To exit, press enter"), new Vector2(35, 435), Color.Yellow);
+                    player.Draw(_spriteBatch);
                     break;
 
                 case GameState.GameOver:
                     GraphicsDevice.Clear(Color.Black);
                     _spriteBatch.DrawString(frontLayer, "GAME OVER", new Vector2(35, 7), Color.OrangeRed);
                     _spriteBatch.DrawString(Normal, "To exit, press enter", new Vector2(35, 307), Color.Yellow);
+                    player.Orientation = c;
+                    player.Draw(_spriteBatch);
+                    break;
+                case GameState.Win:
+                    GraphicsDevice.Clear(Color.White);
+                    _spriteBatch.DrawString(frontLayer, "You WIN!", new Vector2(35, 7), Color.GreenYellow);
+                    _spriteBatch.DrawString(Normal, "To exit, press enter", new Vector2(35, 307), Color.Black);
                     player.Orientation = c;
                     player.Draw(_spriteBatch);
                     break;

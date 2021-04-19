@@ -14,6 +14,7 @@ namespace MainGame
         private GameState GS;
         private int LevelNum;
         List<Guard> guardList;
+        private Rectangle finishLine;
         
         //This represents a 2d  array of where guard should be in a level
         //Its first value is always 5 since thats the number of rows
@@ -27,6 +28,7 @@ namespace MainGame
             set
             {
                 this.position.X = value;
+                this.finishLine = new Rectangle(this.X + this.position.Width * (5 + LevelNum), this.Y, 100, this.position.Height);
             }
         }
         public int Y
@@ -35,7 +37,13 @@ namespace MainGame
             set
             {
                 this.position.Y = value;
+                this.finishLine = new Rectangle(this.X + this.position.Width * (5 + LevelNum), this.Y, 100, this.position.Height);
             }
+        }
+
+        public Rectangle FinishLine
+        {
+            get { return this.finishLine; }
         }
 
         public List<Guard> Guards
@@ -51,12 +59,13 @@ namespace MainGame
             this.LevelNum = levelNum;
             bool curAdd = false;
             guardList = new List<Guard>();
+            this.finishLine = new Rectangle(this.X + this.position.Width * (5 + LevelNum), this.Y, 100, this.position.Height);
 
             //This is where the random generation logic is handled for levels
             if (gs == GameState.Normal)
             {
                 int guards = randy.Next(3 + levelNum,5 + levelNum * 2);
-                int positionsNum = (3 + levelNum) * 3;
+                int positionsNum = (5 + levelNum) * 3;
                 guard = new bool[5, positionsNum];
                 for (int i = 0; i < positionsNum; i++)
                 {
@@ -83,7 +92,10 @@ namespace MainGame
                                         155 + 50 * p,
                                         (int)baseGuard.GuardWidth, 
                                         (int)baseGuard.GuardHeight),
-                                        baseGuard.Texture, levelNum));
+                                        baseGuard.Texture, 
+                                        levelNum,
+                                        baseGuard.ViewCone,
+                                        true));
                                 }
                             }
                             else
@@ -97,12 +109,13 @@ namespace MainGame
             }
             else if (gs == GameState.Hard)
             {
+                int guards = randy.Next(5 + levelNum*2, 7 + levelNum * 3);
+                int positionsNum = (5 + levelNum) * 3;
+                guard = new bool[5, positionsNum];
+                for (int i = 0; i < positionsNum; i++)
                 {
-                    int guards = randy.Next(5 + levelNum * 3);
-                    int guardsAdded = 0;
-                    int positionsNum = (5 + levelNum) * 4;
-                    guard = new bool[5, positionsNum];
-                    for (int i = 0; i < positionsNum; i++)
+
+
                     {
                         for (int p = 0; p < 5; p++)
                         {
@@ -112,12 +125,21 @@ namespace MainGame
                             //(Since all of them on different rows would create an easier game)
                             if (guards != 0)
                             {
-                                curAdd = randy.Next((positionsNum * 5) - (i * 5) - p) < guards;
+                                int positionsLeft = guard.Length - (i * 5) - p;
+                                curAdd = randy.Next(positionsLeft) < guards;
                                 guard[p, i] = curAdd;
                                 if (curAdd)
                                 {
                                     guards -= 1;
-                                    guardsAdded += 1;
+                                    guardList.Add(new Guard
+                                        (new Rectangle
+                                        (this.position.X + this.position.Width + ((int)this.position.Width / 3 * i),
+                                        155 + 50 * p,
+                                        (int)baseGuard.GuardWidth,
+                                        (int)baseGuard.GuardHeight),
+                                        baseGuard.Texture, levelNum,
+                                        baseGuard.ViewCone,
+                                        true));
                                 }
                             }
                             else
@@ -139,19 +161,21 @@ namespace MainGame
 
 
 
-        public void Draw(SpriteBatch sb,SpriteFont sf)
+        public void Draw(SpriteBatch sb,SpriteFont nsf,Texture2D  finishLine,SpriteFont finish)
         {
             //This for loop allows for almost infinitely large levels to be drawn, by redrawing the background level sprite  and shifting the x
             //value over and over
             for(int i = 0; i < 5+LevelNum; i++)
             {
                 sb.Draw(this.texture, new Rectangle(new Point(this.position.X + this.position.Width*i,this.position.Y), this.position.Size),Color.White);
-                sb.DrawString(sf,string.Format("{0}",i),new Vector2(this.position.X + this.position.Width*i,this.position.Y),Color.Red);
+                sb.DrawString(nsf,string.Format("{0}",i),new Vector2(this.position.X + this.position.Width*i,this.position.Y),Color.Red);
             }
             for(int p = 0; p < guardList.Count; p++)
             {
                 guardList[p].Draw(sb);
             }
+            sb.Draw(finishLine, new Rectangle(this.X + this.position.Width * (5 + LevelNum), this.Y,100,this.position.Height),new Rectangle(this.X + this.position.Width * (5 + LevelNum), this.Y, 100, this.position.Height), Color.White * 2.0f);
+            sb.DrawString(finish, "F\nI\nN\nI\nS\nH", new Vector2(this.X + this.position.Width * (5 + LevelNum) + 30,this.Y),Color.Black);
         }
 
 
@@ -159,10 +183,35 @@ namespace MainGame
         {
             for(int i = 0; i < guardList.Count; i++)
             {
-                guardList[i].X -= speed;
+                guardList[i].X -= speed+2;
             }
 
             this.X -= speed;
+        }
+
+        public bool Collision(Player p)
+        {
+            for(int i = 0; i < guardList.Count; i++)
+            {
+                if (guardList[i].CollisionBox.Intersects(p.CollisionBox))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool Win(Player p)
+        {
+            if (this.finishLine.Intersects(p.CollisionBox))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
         }
 
 
