@@ -287,6 +287,7 @@ namespace MainGame
                 case GameState.Title:
                     GraphicsDevice.Clear(Color.Black);
 
+                    // code for the special rainbow title screen
                     _spriteBatch.DrawString(frontLayer, "Giraffe Noise 2", new Vector2(35, 7), Color.OrangeRed);
                     _spriteBatch.DrawString(Subtitle, "Choose Mode: ", new Vector2(35, 187), Color.Green);
                     _spriteBatch.DrawString(Normal, "Normal - Press 'N'\nHard - Press 'H'", new Vector2(35, 237), Color.Gray);
@@ -364,6 +365,8 @@ namespace MainGame
 
             base.Draw(gameTime);
         }
+
+        // key press helper methods
         protected bool SingleKeyPress(Keys key, KeyboardState kbs, KeyboardState prevkbs)
         {
             return (kbs.IsKeyUp(key) && prevkbs.IsKeyDown(key));
