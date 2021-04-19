@@ -96,14 +96,14 @@ namespace MainGame
             // for in game
             this.viewCone = this.Content.Load<Texture2D>("unnamed");
             this.finishLine = this.Content.Load<Texture2D>("1227835");
-            this.GiraffeSprite = this.Content.Load<Texture2D>("GiraffeStatic");
+            this.GiraffeSprite = this.Content.Load<Texture2D>("NewGiraffe");
             this.GiraffeSpriteWalk = this.Content.Load<Texture2D>("GiraffeWalk");
 
             //Background
             this.background = this.Content.Load<Texture2D>("roadLong");
 
             //Guards
-            this.GuardSprite = this.Content.Load<Texture2D>("guardplaceholder");
+            this.GuardSprite = this.Content.Load<Texture2D>("BrandNewGuard");
 
             //Dead Giraffe
             deadGiraffeSprite = this.Content.Load<Texture2D>("GiraffeDead");
@@ -134,8 +134,8 @@ namespace MainGame
                     if (SingleKeyPress(Keys.N, KBS, prevKBS))
                     {
                         currentState = GameState.Normal;
-                        GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width / 4, (int)GiraffeSprite.Height / 4);
-                        GuardRectangle = new Rectangle(750, 305, (int)GuardSprite.Width / 2, (int)GuardSprite.Height / 2);
+                        GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width /2 , (int)GiraffeSprite.Height/2);
+                        GuardRectangle = new Rectangle(750, 305, (int)GuardSprite.Width , (int)GuardSprite.Height );
                         guard1 = new Guard(GuardRectangle, this.GuardSprite, 3, this.viewCone);
                         this.player = new Player(GiraffeRectangle, this.GiraffeSprite);
                         //Attempting first level creation
@@ -144,7 +144,7 @@ namespace MainGame
                     else if (SingleKeyPress(Keys.H, KBS, prevKBS))
                     {
                         currentState = GameState.Hard;
-                        GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width / 4, (int)GiraffeSprite.Height / 4);
+                        GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width/2 , (int)GiraffeSprite.Height/2 );
                         GuardRectangle = new Rectangle(750, 305, (int)GuardSprite.Width / 2, (int)GuardSprite.Height / 2);
                         guard1 = new Guard(GuardRectangle, this.GuardSprite, 3, this.viewCone);
                         this.player = new Player(GiraffeRectangle, this.GiraffeSprite);
@@ -414,6 +414,8 @@ namespace MainGame
                 currentState = GameState.GameOver;
             }
             */
+
+            //For Andy, the old giraffe sprite was divided by 4 and the guard sprite divided by 2
         }
     }
 }
