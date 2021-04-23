@@ -20,6 +20,7 @@ namespace MainGame
         //Its first value is always 5 since thats the number of rows
         //The second value will be dependent on the length of the level, determined by the number of level and the difficulty
         private bool[,] guard;
+        private Guard baseGuard;
 
         //Helper Properties
         public int X
@@ -49,6 +50,11 @@ namespace MainGame
         public List<Guard> Guards
         {
             get { return this.guardList; }
+        }
+
+        public Guard BaseGuard
+        {
+            get { return this.baseGuard; }
         }
 
         // constructor
@@ -208,6 +214,11 @@ namespace MainGame
                 return false;
             }
 
+        }
+
+        public Level Next()
+        {
+            return new Level(this.GS, this.LevelNum + 1, this.texture, this.position, this.baseGuard);
         }
 
 

@@ -96,7 +96,7 @@ namespace MainGame
             // for in game
             this.viewCone = this.Content.Load<Texture2D>("unnamed");
             this.finishLine = this.Content.Load<Texture2D>("1227835");
-            this.GiraffeSprite = this.Content.Load<Texture2D>("NewGiraffe");
+            this.GiraffeSprite = this.Content.Load<Texture2D>("GiraffeStatic");
             this.GiraffeSpriteWalk = this.Content.Load<Texture2D>("GiraffeWalk");
 
             //Background
@@ -134,7 +134,7 @@ namespace MainGame
                     if (SingleKeyPress(Keys.N, KBS, prevKBS))
                     {
                         currentState = GameState.Normal;
-                        GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width /2 , (int)GiraffeSprite.Height/2);
+                        GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width /4 , (int)GiraffeSprite.Height/4);
                         GuardRectangle = new Rectangle(750, 305, (int)GuardSprite.Width /2, (int)GuardSprite.Height/2 );
                         guard1 = new Guard(GuardRectangle, this.GuardSprite, 3, this.viewCone);
                         this.player = new Player(GiraffeRectangle, this.GiraffeSprite);
@@ -144,7 +144,7 @@ namespace MainGame
                     else if (SingleKeyPress(Keys.H, KBS, prevKBS))
                     {
                         currentState = GameState.Hard;
-                        GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width/2 , (int)GiraffeSprite.Height/2 );
+                        GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width/4 , (int)GiraffeSprite.Height/4 );
                         GuardRectangle = new Rectangle(750, 305, (int)GuardSprite.Width /2, (int)GuardSprite.Height /2);
                         guard1 = new Guard(GuardRectangle, this.GuardSprite, 3, this.viewCone);
                         this.player = new Player(GiraffeRectangle, this.GiraffeSprite);
@@ -155,7 +155,7 @@ namespace MainGame
                     else if (SingleKeyPress(Keys.S, KBS, prevKBS))
                     {
                         currentState = GameState.Speedrun;
-                        GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width / 2, (int)GiraffeSprite.Height / 2);
+                        GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width / 4, (int)GiraffeSprite.Height / 4);
                         GuardRectangle = new Rectangle(750, 305, (int)GuardSprite.Width / 2, (int)GuardSprite.Height / 2);
                         guard1 = new Guard(GuardRectangle, this.GuardSprite, 3, this.viewCone);
                         this.player = new Player(GiraffeRectangle, this.GiraffeSprite);
