@@ -92,7 +92,7 @@ namespace MainGame
             this.frontLayer = this.Content.Load<SpriteFont>("FrontLayer");
             this.Subtitle = this.Content.Load<SpriteFont>("Subtitle");
             this.Normal = this.Content.Load<SpriteFont>("Normal");
-
+            
             // for in game
             this.viewCone = this.Content.Load<Texture2D>("unnamed");
             this.finishLine = this.Content.Load<Texture2D>("1227835");
@@ -104,6 +104,8 @@ namespace MainGame
 
             //Guards
             this.GuardSprite = this.Content.Load<Texture2D>("BrandNewGuard");
+            GuardRectangle = new Rectangle(750, 305, (int)GuardSprite.Width / 2, (int)GuardSprite.Height / 2);
+            guard1 = new Guard(GuardRectangle, this.GuardSprite, 3, this.viewCone);
 
             //Dead Giraffe
             deadGiraffeSprite = this.Content.Load<Texture2D>("GiraffeDead");
@@ -134,20 +136,14 @@ namespace MainGame
                     if (SingleKeyPress(Keys.N, KBS, prevKBS))
                     {
                         currentState = GameState.Normal;
-                        GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width /4 , (int)GiraffeSprite.Height/4);
-                        GuardRectangle = new Rectangle(750, 305, (int)GuardSprite.Width /2, (int)GuardSprite.Height/2 );
-                        guard1 = new Guard(GuardRectangle, this.GuardSprite, 3, this.viewCone);
-                        this.player = new Player(GiraffeRectangle, this.GiraffeSprite);
+                        DrawPlayer();
                         //Attempting first level creation
                         this.level = new Level(GameState.Normal, 0, background, new Rectangle(0, 100, (int)background.Width / 2, (int)background.Height / 2), guard1);
                     }
                     else if (SingleKeyPress(Keys.H, KBS, prevKBS))
                     {
                         currentState = GameState.Hard;
-                        GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width/4 , (int)GiraffeSprite.Height/4 );
-                        GuardRectangle = new Rectangle(750, 305, (int)GuardSprite.Width /2, (int)GuardSprite.Height /2);
-                        guard1 = new Guard(GuardRectangle, this.GuardSprite, 3, this.viewCone);
-                        this.player = new Player(GiraffeRectangle, this.GiraffeSprite);
+                        DrawPlayer();
                         //Attempting first level creation
                         this.level = new Level(GameState.Hard, 0, background, new Rectangle(0, 100, (int)background.Width / 2, (int)background.Height / 2), guard1);
 
@@ -155,10 +151,7 @@ namespace MainGame
                     else if (SingleKeyPress(Keys.S, KBS, prevKBS))
                     {
                         currentState = GameState.Speedrun;
-                        GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width / 4, (int)GiraffeSprite.Height / 4);
-                        GuardRectangle = new Rectangle(750, 305, (int)GuardSprite.Width / 2, (int)GuardSprite.Height / 2);
-                        guard1 = new Guard(GuardRectangle, this.GuardSprite, 3, this.viewCone);
-                        this.player = new Player(GiraffeRectangle, this.GiraffeSprite);
+                        DrawPlayer();
                         //Attempting first level creation
                         this.level = new Level(GameState.Normal, 0, background, new Rectangle(0, 100, (int)background.Width / 2, (int)background.Height / 2), guard1);
                     }
@@ -174,27 +167,21 @@ namespace MainGame
                     // player movement
                     player.Update(gameTime);
 
-
                     // temporary for now, until we can get the full game working
                     if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
                     {
                         currentState = GameState.Title;
                     }
 
-
                     if (level.Win(player))
                     {
-                        GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width / 4, (int)GiraffeSprite.Height / 4);
-                        this.player = new Player(GiraffeRectangle, this.GiraffeSprite);
+                        DrawPlayer();
                         level = level.Next();
                     }
                     if (level.Collision(player))
                     {
                         currentState = GameState.GameOver;
                     }
-
-
-
                     break;
 
                 case GameState.Hard:
@@ -210,7 +197,6 @@ namespace MainGame
                     {
                         currentState = GameState.Title;
                     }
-
 
                     if (level.Win(player))
                     {
@@ -412,7 +398,6 @@ namespace MainGame
 
 
             }
-
             /*
             if (player.Position.Intersects(guard1.Position) == true)
             {
@@ -421,6 +406,13 @@ namespace MainGame
             */
 
             //For Andy, the old giraffe sprite was divided by 4 and the guard sprite divided by 2
+        }
+
+        // helper method for gamestate switching
+        protected void DrawPlayer()
+        {
+            GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width / 4, (int)GiraffeSprite.Height / 4);
+            this.player = new Player(GiraffeRectangle, this.GiraffeSprite);
         }
     }
 }
