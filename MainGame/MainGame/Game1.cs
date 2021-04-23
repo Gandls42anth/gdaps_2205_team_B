@@ -184,7 +184,9 @@ namespace MainGame
 
                     if (level.Win(player))
                     {
-                        currentState = GameState.Win;
+                        GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width / 4, (int)GiraffeSprite.Height / 4);
+                        this.player = new Player(GiraffeRectangle, this.GiraffeSprite);
+                        level = level.Next();
                     }
                     if (level.Collision(player))
                     {

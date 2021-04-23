@@ -15,6 +15,7 @@ namespace MainGame
         private int LevelNum;
         List<Guard> guardList;
         private Rectangle finishLine;
+        private Rectangle defaultRect;
         
         //This represents a 2d  array of where guard should be in a level
         //Its first value is always 5 since thats the number of rows
@@ -42,6 +43,11 @@ namespace MainGame
             }
         }
 
+        public Rectangle DefaultRect
+        {
+            get { return this.defaultRect; }
+        }
+
         public Rectangle FinishLine
         {
             get { return this.finishLine; }
@@ -61,9 +67,11 @@ namespace MainGame
         public Level(GameState gs,int levelNum, Texture2D txt,Rectangle rect,Guard baseGuard) : base(rect,txt)
         {
             Random randy = new Random();
+            this.defaultRect = rect;
             this.GS = gs;
             this.LevelNum = levelNum;
             bool curAdd = false;
+            this.baseGuard = baseGuard;
             guardList = new List<Guard>();
             this.finishLine = new Rectangle(this.X + this.position.Width * (5 + LevelNum), this.Y, 100, this.position.Height);
 
@@ -218,7 +226,9 @@ namespace MainGame
 
         public Level Next()
         {
-            return new Level(this.GS, this.LevelNum + 1, this.texture, this.position, this.baseGuard);
+            //We cant use the "position" rectangle because thats changing, on initialization we set a private rectangle as the default
+            //Then reference that when a new level advancement is done
+            return new Level(this.GS, this.LevelNum + 1, this.texture, this.defaultRect, this.baseGuard);
         }
 
 
