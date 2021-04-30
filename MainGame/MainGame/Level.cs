@@ -23,6 +23,11 @@ namespace MainGame
         private bool[,] guard;
         private Guard baseGuard;
 
+        public int Num
+        {
+            get { return this.LevelNum; }
+        }
+
         //Helper Properties
         public int X
         {

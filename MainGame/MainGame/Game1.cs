@@ -25,7 +25,9 @@ namespace MainGame
 
         // fields
         private GameState currentState;
-
+        private bool prevSpeedrun;
+        private string PlayerName;
+        private List<string> Scores;
         private Player player;
         private SpriteFont backLayer;
         private SpriteFont frontLayer;
@@ -41,14 +43,10 @@ namespace MainGame
         private int c;
         private int playTime;
         private int shift;
-        private StreamReader reader;
-        private StreamWriter writer;
-        private bool written;
         private Level level;
 
         private Rectangle GiraffeRectangle;
 
-        private List<Guard> Guards;
         private Texture2D GuardSprite;
         private Rectangle GuardRectangle;
         private Guard guard1;
@@ -73,10 +71,11 @@ namespace MainGame
             playTime = 0;
             c = 0;
             shift = 0;
-            written = false;
             Colors = new List<Color>(6) { Color.Red, Color.DarkOrange, Color.Yellow, Color.Green, Color.Blue, Color.Violet };
             this.prevKBS = new KeyboardState();
-
+            prevSpeedrun = false;
+            Scores = new List<string> { };
+            PlayerName = "";
 
             base.Initialize();
         }
@@ -126,11 +125,11 @@ namespace MainGame
             switch (currentState)
             {
                 case GameState.Title:
-                    written = false;
                     if (c % 30 == 0)
                     {
                         shift++;
                     }
+                    Scores.Clear();
                     c++;
                     //This handles the switches between states
                     //But first it handles initialization logic
@@ -174,7 +173,7 @@ namespace MainGame
                 //For the Normal, Hard and speedrun Modes
                 case GameState.Normal:
                     playTime += 1;
-                    level.Move(2);
+                    level.Move(2 + level.Num*2);
 
                     // player movement
                     player.Update(gameTime);
@@ -185,11 +184,14 @@ namespace MainGame
                         currentState = GameState.Title;
                     }
 
-                    if (level.Win(player))
+                    if (level.Win(player) && level.Num >= 5)
                     {
-                        DrawPlayer();
+                        currentState = GameState.Win;
+                    }else if (level.Win(player))
+                    {
                         level = level.Next();
                     }
+
                     if (level.Collision(player))
                     {
                         currentState = GameState.GameOver;
@@ -198,7 +200,7 @@ namespace MainGame
 
                 case GameState.Hard:
                     playTime += 1;
-                    level.Move(2);
+                    level.Move(5 + level.Num*3);
 
                     // player movement
                     player.Update(gameTime);
@@ -210,9 +212,12 @@ namespace MainGame
                         currentState = GameState.Title;
                     }
 
-                    if (level.Win(player))
+                    if (level.Win(player) && level.Num >= 8)
                     {
                         currentState = GameState.Win;
+                    }else if (level.Win(player))
+                    {
+                        level = level.Next();
                     }
                     if (level.Collision(player))
                     {
@@ -222,7 +227,7 @@ namespace MainGame
 
                 case GameState.Speedrun:
                     playTime += 1;
-                    level.Move(2);
+                    level.Move(2 + level.Num*2);
 
                     // player movement
                     player.Update(gameTime);
@@ -235,9 +240,46 @@ namespace MainGame
                     }
 
 
-                    if (level.Win(player))
+                    if (level.Win(player) && level.Num >= 5)
                     {
+
                         currentState = GameState.Win;
+                        prevSpeedrun = true;
+
+                            StreamReader ScoreReader = new StreamReader("Scores.txt");
+                            string line;
+                            string[] split;
+                            int l = 0;
+                        bool added = false;
+                            while((line = ScoreReader.ReadLine()) != null)
+                            {
+                                l++;
+                                split = line.Split(',',':','.');
+                                double time = double.Parse(split[1]) + double.Parse(split[2])*0.01;
+                                if(Math.Round((double)playTime/60,2 ) < time)
+                                {
+                                    Scores.Add(l + "." + "☺" +  " : " + Math.Round((double)playTime / 60, 2) + "s");
+                                    l++;
+                                added = true;
+                                }
+                                Scores.Add(l + "." + split[0].ToUpper() + " : " + time + "s");
+                            }
+                            ScoreReader.Close();
+                            if (!added)
+                            {
+                                Scores.Add((l+1) + "." + "☺" + " : " + Math.Round((double)playTime / 60, 2) + "s");
+                            }
+                            //Now the scores list contains all the scores
+                            ScoreReader.Close();
+
+
+
+
+
+
+                    }else if (level.Win(player))
+                    {
+                        level = level.Next();
                     }
                     if (level.Collision(player))
                     {
@@ -247,13 +289,6 @@ namespace MainGame
 
                 case GameState.GameOver:
                     c++;
-                    if (!written)
-                    {
-                        written = true;
-                        writer = new StreamWriter("Scores");
-                        writer.Write(playTime / 60 + "s");
-                        writer.Close();
-                    }
                     if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
                     {
                         currentState = GameState.Title;
@@ -261,8 +296,27 @@ namespace MainGame
                     break;
                 case GameState.Win:
                     c++;
+                    if (prevSpeedrun)
+                    {
+                        PlayerName = AddLetter(PlayerName);
+                    }
                     if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
                     {
+                            StreamWriter ScoreWriter = new StreamWriter("Scores.txt");
+                            foreach (string n in Scores)
+                            {
+
+                                string[] split = n.Split(',', ':', '.','s');
+                                if (split[1].Trim() != "☺")
+                                {
+                                    ScoreWriter.WriteLine(split[1].Trim() + ":" + split[2].Trim() +"."+split[3].Trim());
+                                }
+                                else
+                                {
+                                    ScoreWriter.WriteLine(PlayerName.Trim().ToUpper() + ":" + split[2].Trim()+"."+split[3].Trim());
+                                }
+                            }
+                            ScoreWriter.Close();
                         currentState = GameState.Title;
                     }
                     break;
@@ -286,7 +340,7 @@ namespace MainGame
             {
                 case GameState.Title:
                     GraphicsDevice.Clear(Color.Black);
-
+                    playTime = 0;
                     // code for the special rainbow title screen
                     _spriteBatch.DrawString(frontLayer, "Giraffe Noise 2", new Vector2(35, 7), Color.OrangeRed);
                     _spriteBatch.DrawString(Subtitle, "Choose Mode: ", new Vector2(35, 187), Color.Green);
@@ -319,7 +373,7 @@ namespace MainGame
                     level.Draw(_spriteBatch,Normal,finishLine,this.Subtitle);
                     _spriteBatch.DrawString(
                         frontLayer, 
-                        string.Format("Total Guards: {0}",level.Guards.Count), 
+                        string.Format("Total Time: {0}",Math.Round((double)playTime/60,2)), 
                         new Vector2(35, 7),
                         Color.OrangeRed
                         );
@@ -333,7 +387,7 @@ namespace MainGame
                     level.Draw(_spriteBatch, Normal, finishLine, this.Subtitle);
                     _spriteBatch.DrawString(
                         frontLayer,
-                        string.Format("Total Guards: {0}", level.Guards.Count),
+                        string.Format("Total Time: {0}", Math.Round((double)playTime / 60, 2)),
                         new Vector2(35, 7),
                         Color.OrangeRed
                         );
@@ -347,7 +401,7 @@ namespace MainGame
                     level.Draw(_spriteBatch, Normal, finishLine, this.Subtitle);
                     _spriteBatch.DrawString(
                         frontLayer,
-                        string.Format("Total Guards: {0}", level.Guards.Count),
+                        string.Format("Total Time: {0}", Math.Round((double)playTime / 60, 2)),
                         new Vector2(35, 7),
                         Color.OrangeRed
                         );
@@ -367,6 +421,28 @@ namespace MainGame
                     GraphicsDevice.Clear(Color.White);
                     _spriteBatch.DrawString(frontLayer, "You WIN!", new Vector2(35, 7), Color.GreenYellow);
                     _spriteBatch.DrawString(Normal, "To exit, press enter", new Vector2(35, 307), Color.Black);
+                    //If this was speedrun, display and check the scores
+                    if (prevSpeedrun)
+                    {
+                        _spriteBatch.DrawString(Normal, string.Format("{0}:{1}",PlayerName.ToUpper(),Math.Round((double)playTime/60,2)), new Vector2(35, 157), Color.Black);
+
+                        for(int i = 0; i < Scores.Count; i++)
+                        {
+                            if (i < 10)
+                            {
+                                string[] split = Scores[i].Split(',', ':', 's', '.');
+                                if (split[1].Trim() != "☺")
+                                {
+                                    _spriteBatch.DrawString(Normal, Scores[i], new Vector2(335, 30 + 30 * i), Color.Black);
+                                }
+                                else
+                                {
+                                    _spriteBatch.DrawString(Normal, "Your Score HERE!", new Vector2(335, 30 + 30 * i), Color.Black);
+                                }
+                            }
+                        }
+
+                    }
                     player.Orientation = c;
                     player.Draw(_spriteBatch);
                     break;
@@ -440,5 +516,118 @@ namespace MainGame
             GiraffeRectangle = new Rectangle(100, 200, (int)GiraffeSprite.Width / 4, (int)GiraffeSprite.Height / 4);
             this.player = new Player(GiraffeRectangle, this.GiraffeSprite);
         }
+
+        public string AddLetter(string n)
+        {
+            if (SingleKeyPress(Keys.A, KBS, prevKBS))
+            {
+                return n + "a";
+            }
+            if (SingleKeyPress(Keys.B, KBS, prevKBS))
+            {
+                return n + "b";
+            }
+            if (SingleKeyPress(Keys.C, KBS, prevKBS))
+            {
+                return n + "c";
+            }
+            if (SingleKeyPress(Keys.D, KBS, prevKBS))
+            {
+                return n + "d";
+            }
+            if (SingleKeyPress(Keys.E, KBS, prevKBS))
+            {
+                return n + "e";
+            }
+            if (SingleKeyPress(Keys.F, KBS, prevKBS))
+            {
+                return n + "f";
+            }
+            if (SingleKeyPress(Keys.G, KBS, prevKBS))
+            {
+                return n + "g";
+            }
+            if (SingleKeyPress(Keys.H, KBS, prevKBS))
+            {
+                return n + "h";
+            }
+            if (SingleKeyPress(Keys.I, KBS, prevKBS))
+            {
+                return n + "i";
+            }
+            if (SingleKeyPress(Keys.J, KBS, prevKBS))
+            {
+                return n + "j";
+            }
+            if (SingleKeyPress(Keys.K, KBS, prevKBS))
+            {
+                return n + "k";
+            }
+            if (SingleKeyPress(Keys.L, KBS, prevKBS))
+            {
+                return n + "l";
+            }
+            if (SingleKeyPress(Keys.M, KBS, prevKBS))
+            {
+                return n + "m";
+            }
+            if (SingleKeyPress(Keys.N, KBS, prevKBS))
+            {
+                return n + "n";
+            }
+            if (SingleKeyPress(Keys.O, KBS, prevKBS))
+            {
+                return n + "o";
+            }
+            if (SingleKeyPress(Keys.P, KBS, prevKBS))
+            {
+                return n + "p";
+            }
+            if (SingleKeyPress(Keys.Q, KBS, prevKBS))
+            {
+                return n + "q";
+            }
+            if (SingleKeyPress(Keys.R, KBS, prevKBS))
+            {
+                return n + "r";
+            }
+            if (SingleKeyPress(Keys.S, KBS, prevKBS))
+            {
+                return n + "s";
+            }
+            if (SingleKeyPress(Keys.T, KBS, prevKBS))
+            {
+                return n + "t";
+            }
+            if (SingleKeyPress(Keys.U, KBS, prevKBS))
+            {
+                return n + "u";
+            }
+            if (SingleKeyPress(Keys.V, KBS, prevKBS))
+            {
+                return n + "v";
+            }
+            if (SingleKeyPress(Keys.W, KBS, prevKBS))
+            {
+                return n + "w";
+            }
+            if (SingleKeyPress(Keys.X, KBS, prevKBS))
+            {
+                return n + "x";
+            }
+            if (SingleKeyPress(Keys.Y, KBS, prevKBS))
+            {
+                return n + "y";
+            }
+            if (SingleKeyPress(Keys.Z, KBS, prevKBS))
+            {
+                return n + "z";
+            }
+            else
+            {
+                return n;
+            }
+        }
+
     }
 }
