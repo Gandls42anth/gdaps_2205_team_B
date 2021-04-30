@@ -10,6 +10,7 @@ namespace MainGame
     enum GameState
     {
         Title,
+        Controls,
         Normal,
         Hard,
         Speedrun,
@@ -155,8 +156,19 @@ namespace MainGame
                         //Attempting first level creation
                         this.level = new Level(GameState.Normal, 0, background, new Rectangle(0, 100, (int)background.Width / 2, (int)background.Height / 2), guard1);
                     }
+                    else if (SingleKeyPress(Keys.C, KBS, prevKBS))
+                    {
+                        currentState = GameState.Controls;
+                    }
                     break;
 
+                    // state logic for the controls screem
+                case GameState.Controls:
+                    if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
+                    {
+                        currentState = GameState.Title;
+                    }
+                    break;
 
                 //This Section handless the state logic
                 //For the Normal, Hard and speedrun Modes
@@ -285,8 +297,22 @@ namespace MainGame
                     _spriteBatch.DrawString(frontLayer, "I", new Vector2(235, 87 + (15 * (float)Math.Sin(c / 6 + 90))), Colors.ToArray()[(3 + shift) % Colors.Count]);
                     _spriteBatch.DrawString(frontLayer, "N", new Vector2(275, 87 + (15 * (float)Math.Sin(c / 6 + 120))), Colors.ToArray()[(4 + shift) % Colors.Count]);
                     _spriteBatch.DrawString(frontLayer, "?", new Vector2(345, 87 + (15 * (float)Math.Sin(c / 6 + 150))), Colors.ToArray()[(5 + shift) % Colors.Count]);
-                    _spriteBatch.DrawString(Normal, "Speedrun - Press 'S'", new Vector2(35, 307), Color.Gray);
+                    _spriteBatch.DrawString(Normal, "Speedrun - Press 'S'\nHow to Play - Press 'C'", new Vector2(35, 307), Color.Gray);
 
+                    break;
+
+                case GameState.Controls:
+                    GraphicsDevice.Clear(Color.Black);
+                    _spriteBatch.DrawString(frontLayer, "Goal and Controls:", new Vector2(10,10), Color.White);
+
+                    _spriteBatch.DrawString(Normal, "You play as a giraffe attempting to evade the cops, " +
+                        "\ndodge them as you race through the streets of NYC!",
+                        new Vector2(10, 100), Color.LightPink);
+
+                    _spriteBatch.DrawString(Normal, "Up - 'W'          Down - S" +
+                        "\nLeft - 'A'          Right - 'D'", new Vector2(10, 250), Color.CornflowerBlue);
+
+                    _spriteBatch.DrawString(Normal, "Press 'ENTER' to return to main menu", new Vector2(10, 420), Color.Gray);
                     break;
 
                 case GameState.Normal:
