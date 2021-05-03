@@ -15,7 +15,8 @@ namespace MainGame
         Hard,
         Speedrun,
         GameOver,
-        Win
+        Win,
+        Endless
     }
 
     public class Game1 : Game
@@ -26,6 +27,7 @@ namespace MainGame
         // fields
         private GameState currentState;
         private bool prevSpeedrun;
+        private bool prevEndless;
         private string PlayerName;
         private List<string> Scores;
         private Player player;
@@ -74,6 +76,7 @@ namespace MainGame
             Colors = new List<Color>(6) { Color.Red, Color.DarkOrange, Color.Yellow, Color.Green, Color.Blue, Color.Violet };
             this.prevKBS = new KeyboardState();
             prevSpeedrun = false;
+            prevEndless = false;
             Scores = new List<string> { };
             PlayerName = "";
 
@@ -153,6 +156,11 @@ namespace MainGame
                         currentState = GameState.Speedrun;
                         DrawPlayer();
                         //Attempting first level creation
+                        this.level = new Level(GameState.Normal, 0, background, new Rectangle(0, 100, (int)background.Width / 2, (int)background.Height / 2), guard1);
+                    }else if (SingleKeyPress(Keys.E,KBS,prevKBS))
+                    {
+                        currentState = GameState.Endless;
+                        DrawPlayer();
                         this.level = new Level(GameState.Normal, 0, background, new Rectangle(0, 100, (int)background.Width / 2, (int)background.Height / 2), guard1);
                     }
                     else if (SingleKeyPress(Keys.C, KBS, prevKBS))
@@ -245,6 +253,7 @@ namespace MainGame
 
                         currentState = GameState.Win;
                         prevSpeedrun = true;
+                        Scores.Clear();
 
                             StreamReader ScoreReader = new StreamReader("Scores.txt");
                             string line;
@@ -284,12 +293,93 @@ namespace MainGame
                     if (level.Collision(player))
                     {
                         currentState = GameState.GameOver;
+                        prevEndless = true;
                     }
+                    break;
+
+                case GameState.Endless:
+                    playTime += 1;
+                    //Player movement
+                    level.Move(2 + level.Num * 2);
+                    player.Update(gameTime);
+
+                    if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
+                    {
+                        currentState = GameState.Title;
+                    }
+
+                    if (level.Win(player))
+                    {
+                        level = level.Next();
+
+                    }else if (level.Collision(player))
+                    {
+                        currentState = GameState.GameOver;
+                        prevEndless = true;
+
+                        Scores.Clear();
+                        //Read the endless scores from file
+                        StreamReader ScoreReader = new StreamReader("EndlessScores.txt");
+                        string line;
+                        string[] split;
+                        int l = 0;
+                        bool added = false;
+                        while ((line = ScoreReader.ReadLine()) != null)
+                        {
+                            l++;
+                            split = line.Split(',', ':', '.');
+                            double highestLevel = int.Parse(split[1]);
+                            if (level.Num > highestLevel)
+                            {
+                                Scores.Add(l + "." + "☻" + " : " + level.Num);
+                                l++;
+                                added = true;
+                            }
+                            Scores.Add(l + "." + split[0].ToUpper() + " : " + highestLevel);
+                        }
+                        ScoreReader.Close();
+                        if (!added)
+                        {
+                            Scores.Add((l + 1) + "." + "☻" + " : " + level.Num);
+                        }
+                        //Now the scores list contains all the scores
+                        ScoreReader.Close();
+
+                    }
+
+
+
                     break;
 
                 case GameState.GameOver:
                     c++;
-                    if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
+                    if (prevEndless)
+                    {
+                        //If it was endless, start asking for the player name
+                        PlayerName = AddLetter(PlayerName);
+                    }
+                    if (SingleKeyPress(Keys.Enter, KBS, prevKBS) && prevEndless)
+                    {
+                        currentState = GameState.Title;
+                        //Now write to file
+                        StreamWriter ScoreWriter = new StreamWriter("EndlessScores.txt");
+                        foreach (string n in Scores)
+                        {
+
+                            string[] split = n.Split(',', ':', '.', 's');
+                            if (split[1].Trim() != "☻")
+                            {
+                                ScoreWriter.WriteLine(split[1].Trim() + ":" + split[2].Trim());
+                            }
+                            else
+                            {
+                                ScoreWriter.WriteLine(PlayerName.Trim().ToUpper() + ":" + split[2].Trim());
+                            }
+                        }
+                        ScoreWriter.Close();
+                        PlayerName = "";
+                    }
+                    else if(SingleKeyPress(Keys.Enter, KBS, prevKBS))
                     {
                         currentState = GameState.Title;
                     }
@@ -298,10 +388,12 @@ namespace MainGame
                     c++;
                     if (prevSpeedrun)
                     {
+                        //If it was speedrun and you won, allow the player to enter their name
                         PlayerName = AddLetter(PlayerName);
                     }
-                    if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
+                    if (SingleKeyPress(Keys.Enter, KBS, prevKBS) && prevSpeedrun)
                     {
+                        //Once they've entered it, write the new order of scores to the file
                             StreamWriter ScoreWriter = new StreamWriter("Scores.txt");
                             foreach (string n in Scores)
                             {
@@ -309,14 +401,20 @@ namespace MainGame
                                 string[] split = n.Split(',', ':', '.','s');
                                 if (split[1].Trim() != "☺")
                                 {
-                                    ScoreWriter.WriteLine(split[1].Trim() + ":" + split[2].Trim() +"."+split[3].Trim());
+                                    ScoreWriter.WriteLine(split[1].Trim() + ":" + split[2].Trim());
                                 }
                                 else
                                 {
-                                    ScoreWriter.WriteLine(PlayerName.Trim().ToUpper() + ":" + split[2].Trim()+"."+split[3].Trim());
+                                    ScoreWriter.WriteLine(PlayerName.Trim().ToUpper() + ":" + split[2].Trim());
                                 }
                             }
                             ScoreWriter.Close();
+                        //And return to title
+                        currentState = GameState.Title;
+                        PlayerName = "";
+                    }else if(SingleKeyPress(Keys.Enter, KBS, prevKBS))
+                    {
+                        //If it wasnt speedrun, just go to title
                         currentState = GameState.Title;
                     }
                     break;
@@ -351,7 +449,7 @@ namespace MainGame
                     _spriteBatch.DrawString(frontLayer, "I", new Vector2(235, 87 + (15 * (float)Math.Sin(c / 6 + 90))), Colors.ToArray()[(3 + shift) % Colors.Count]);
                     _spriteBatch.DrawString(frontLayer, "N", new Vector2(275, 87 + (15 * (float)Math.Sin(c / 6 + 120))), Colors.ToArray()[(4 + shift) % Colors.Count]);
                     _spriteBatch.DrawString(frontLayer, "?", new Vector2(345, 87 + (15 * (float)Math.Sin(c / 6 + 150))), Colors.ToArray()[(5 + shift) % Colors.Count]);
-                    _spriteBatch.DrawString(Normal, "Speedrun - Press 'S'\nHow to Play - Press 'C'", new Vector2(35, 307), Color.Gray);
+                    _spriteBatch.DrawString(Normal, "Speedrun - Press 'S'\nEndless - Press 'E'\nHow to Play - Press 'C'", new Vector2(35, 307), Color.Gray);
 
                     break;
 
@@ -373,7 +471,7 @@ namespace MainGame
                     level.Draw(_spriteBatch,Normal,finishLine,this.Subtitle);
                     _spriteBatch.DrawString(
                         frontLayer, 
-                        string.Format("Total Time: {0}",Math.Round((double)playTime/60,2)), 
+                        string.Format("Total Guards: {0}",level.Guards.Count), 
                         new Vector2(35, 7),
                         Color.OrangeRed
                         );
@@ -387,7 +485,7 @@ namespace MainGame
                     level.Draw(_spriteBatch, Normal, finishLine, this.Subtitle);
                     _spriteBatch.DrawString(
                         frontLayer,
-                        string.Format("Total Time: {0}", Math.Round((double)playTime / 60, 2)),
+                        string.Format("Total Guards: {0}", level.Guards.Count),
                         new Vector2(35, 7),
                         Color.OrangeRed
                         );
@@ -409,6 +507,17 @@ namespace MainGame
                     _spriteBatch.DrawString(Normal, string.Format("To exit, press enter"), new Vector2(35, 435), Color.Yellow);
                     player.Draw(_spriteBatch);
                     break;
+                case GameState.Endless:
+                    level.Draw(_spriteBatch, Normal, finishLine, this.Subtitle);
+                        _spriteBatch.DrawString(
+                        frontLayer,
+                        string.Format("Level Count: {0}", level.Num),
+                        new Vector2(35, 7),
+                        Color.OrangeRed
+                        );
+                    _spriteBatch.DrawString(Normal, string.Format("To exit, press enter"), new Vector2(35, 435), Color.Yellow);
+                    player.Draw(_spriteBatch);
+                    break;
 
                 case GameState.GameOver:
                     GraphicsDevice.Clear(Color.Black);
@@ -416,6 +525,27 @@ namespace MainGame
                     _spriteBatch.DrawString(Normal, "To exit, press enter", new Vector2(35, 307), Color.Yellow);
                     player.Orientation = c;
                     player.Draw(_spriteBatch);
+                    if (prevEndless)
+                    {
+                        _spriteBatch.DrawString(Normal, string.Format("{0}:{1}", PlayerName.ToUpper(), level.Num), new Vector2(35, 177), Color.White);
+
+                        for (int i = 0; i < Scores.Count; i++)
+                        {
+                            if (i < 10)
+                            {
+                                string[] split = Scores[i].Split(',', ':','.');
+                                if (split[1].Trim() != "☻")
+                                {
+                                    _spriteBatch.DrawString(Normal, Scores[i], new Vector2(335, 80 + 30 * i), Color.White);
+                                }
+                                else
+                                {
+                                    _spriteBatch.DrawString(Normal, "Your Score HERE!", new Vector2(350, 80 + 30 * i), Color.White);
+                                }
+                            }
+                        }
+
+                    }
                     break;
                 case GameState.Win:
                     GraphicsDevice.Clear(Color.White);
@@ -622,6 +752,10 @@ namespace MainGame
             if (SingleKeyPress(Keys.Z, KBS, prevKBS))
             {
                 return n + "z";
+            }
+            if (SingleKeyPress(Keys.Delete, KBS, prevKBS))
+            {
+                return n.Remove(n.Length-1);
             }
             else
             {
