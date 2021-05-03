@@ -180,7 +180,9 @@ namespace MainGame
                 //This Section handless the state logic
                 //For the Normal, Hard and speedrun Modes
                 case GameState.Normal:
+                    //Playtime recording
                     playTime += 1;
+                    //Increasing speed 
                     level.Move(2 + level.Num*2);
 
                     // player movement
@@ -207,14 +209,16 @@ namespace MainGame
                     break;
 
                 case GameState.Hard:
+                    //Playtime recording 
                     playTime += 1;
+                    //faster movement and stronger scaling
                     level.Move(5 + level.Num*3);
 
                     // player movement
                     player.Update(gameTime);
 
 
-                    // temporary for now, until we can get the full game working
+                    // Switches between gamestates
                     if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
                     {
                         currentState = GameState.Title;
@@ -235,6 +239,7 @@ namespace MainGame
 
                 case GameState.Speedrun:
                     playTime += 1;
+                    //Scaling like normal mode
                     level.Move(2 + level.Num*2);
 
                     // player movement
@@ -247,13 +252,14 @@ namespace MainGame
                         currentState = GameState.Title;
                     }
 
-
+                    //Recording speedrun wins
                     if (level.Win(player) && level.Num >= 5)
                     {
 
                         currentState = GameState.Win;
                         prevSpeedrun = true;
                         Scores.Clear();
+                        //Read the speedrun scores from file (accurate to one hundredth of a second)
 
                             StreamReader ScoreReader = new StreamReader("Scores.txt");
                             string line;
@@ -262,6 +268,7 @@ namespace MainGame
                         bool added = false;
                             while((line = ScoreReader.ReadLine()) != null)
                             {
+                            //Add them (in order) into the "scores" list of strings in proper format
                                 l++;
                                 split = line.Split(',',':','.');
                                 double time = double.Parse(split[1]) + double.Parse(split[2])*0.01;
@@ -279,6 +286,7 @@ namespace MainGame
                                 Scores.Add((l+1) + "." + "☺" + " : " + Math.Round((double)playTime / 60, 2) + "s");
                             }
                             //Now the scores list contains all the scores
+                            //Close the reader
                             ScoreReader.Close();
 
 
@@ -293,7 +301,7 @@ namespace MainGame
                     if (level.Collision(player))
                     {
                         currentState = GameState.GameOver;
-                        prevEndless = true;
+                        prevSpeedrun = true;
                     }
                     break;
 
@@ -307,12 +315,14 @@ namespace MainGame
                     {
                         currentState = GameState.Title;
                     }
-
+                    //Since endless has no win condition, winning will always cause a level.next()
                     if (level.Win(player))
                     {
                         level = level.Next();
 
-                    }else if (level.Collision(player))
+                    }
+                    //The only end is if you die, in which case we record your score(# of levels cleared)
+                    else if (level.Collision(player))
                     {
                         currentState = GameState.GameOver;
                         prevEndless = true;
@@ -469,6 +479,7 @@ namespace MainGame
 
                 case GameState.Normal:
                     level.Draw(_spriteBatch,Normal,finishLine,this.Subtitle);
+                    //On normal and hard mode, tell the player how many guards there are
                     _spriteBatch.DrawString(
                         frontLayer, 
                         string.Format("Total Guards: {0}",level.Guards.Count), 
@@ -483,6 +494,7 @@ namespace MainGame
 
                 case GameState.Hard:
                     level.Draw(_spriteBatch, Normal, finishLine, this.Subtitle);
+                    //On normal and hard mode, tell the player how many guards there are
                     _spriteBatch.DrawString(
                         frontLayer,
                         string.Format("Total Guards: {0}", level.Guards.Count),
@@ -497,6 +509,7 @@ namespace MainGame
 
                 case GameState.Speedrun:
                     level.Draw(_spriteBatch, Normal, finishLine, this.Subtitle);
+                    //on speedrun mode, display the total time
                     _spriteBatch.DrawString(
                         frontLayer,
                         string.Format("Total Time: {0}", Math.Round((double)playTime / 60, 2)),
@@ -509,9 +522,10 @@ namespace MainGame
                     break;
                 case GameState.Endless:
                     level.Draw(_spriteBatch, Normal, finishLine, this.Subtitle);
+                    //On endless mode, display the levels cleared
                         _spriteBatch.DrawString(
                         frontLayer,
-                        string.Format("Level Count: {0}", level.Num),
+                        string.Format("Levels Cleared: {0}", level.Num),
                         new Vector2(35, 7),
                         Color.OrangeRed
                         );
@@ -525,8 +539,12 @@ namespace MainGame
                     _spriteBatch.DrawString(Normal, "To exit, press enter", new Vector2(35, 307), Color.Yellow);
                     player.Orientation = c;
                     player.Draw(_spriteBatch);
+                    //Altered version of the speedrun score display, color must be white because gameover has a black background
+                    //And since the "Game Over" is larger than the "YOU WIN!" string, the list has to be shifted slightly right
+                    //and downward
                     if (prevEndless)
                     {
+                        //Allow the player to see the real time entering of their name for the record
                         _spriteBatch.DrawString(Normal, string.Format("{0}:{1}", PlayerName.ToUpper(), level.Num), new Vector2(35, 177), Color.White);
 
                         for (int i = 0; i < Scores.Count; i++)
@@ -554,6 +572,7 @@ namespace MainGame
                     //If this was speedrun, display and check the scores
                     if (prevSpeedrun)
                     {
+                        //Allow the player to see the real time entering of their name for the record
                         _spriteBatch.DrawString(Normal, string.Format("{0}:{1}",PlayerName.ToUpper(),Math.Round((double)playTime/60,2)), new Vector2(35, 157), Color.Black);
 
                         for(int i = 0; i < Scores.Count; i++)
