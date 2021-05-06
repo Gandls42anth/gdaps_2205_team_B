@@ -24,6 +24,40 @@ namespace MainGame
         public Texture2D NPCTexture { get { return npcTexture; } }
         public string Message { get { return message; } }
 
+        // position/size properties
+        public int X
+        {
+            get { return this.npcRect.X; }
+            set
+            {
+                this.npcRect = new Rectangle(new Point(value, this.npcRect.Y), this.npcRect.Size);
+            }
+        }
+        public int Y
+        {
+            get { return this.npcRect.Y; }
+            set
+            {
+                this.npcRect = new Rectangle(new Point(this.npcRect.X, value), this.npcRect.Size);
+            }
+        }
+        public int NPCWidth
+        {
+            get { return this.npcRect.Width; }
+            set
+            {
+                this.npcRect.Width = value;
+            }
+        }
+        public int NPCHeight
+        {
+            get { return this.npcRect.Height; }
+            set
+            {
+                this.npcRect.Height = value;
+            }
+        }
+
         // constructor
         public NPC(Rectangle rect, Texture2D txt) : base(rect,txt)
         {

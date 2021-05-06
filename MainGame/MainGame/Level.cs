@@ -93,6 +93,7 @@ namespace MainGame
             //This is where the random generation logic is handled for levels
             if (gs == GameState.Normal)
             {
+                // guard generation
                 int guards = randy.Next(3 + levelNum,5 + levelNum * 2);
                 int positionsNum = (5 + levelNum) * 3;
                 guard = new bool[5, positionsNum];
@@ -131,6 +132,39 @@ namespace MainGame
                         }
                     }
                 }
+
+                // friendly npc generation, there are a max of 3 friendlies per level
+                // generation is similar to that of guard generation, just with a lot less of them (in higher levels at least)
+                int friends = randy.Next(4);
+                friend = new bool[5, 15];
+                for(int n = 0; n < 15; n++)
+                {
+                    for(int m = 0; m < 5; m++)
+                    {
+                        if(friends != 0)
+                        {
+                            int positionsLeft = 15 - (n * 5) - m;
+                            curAdd = randy.Next(positionsLeft) < friends;
+                            friend[m, n] = curAdd;
+                            if(curAdd)
+                            {
+                                friends -= 1;
+                                npcList.Add(new NPC(
+                                    new Rectangle(
+                                        this.position.X + this.position.Width + 
+                                        ((int)this.position.Width / 3 * n),
+                                        155 + 50 * n,
+                                        (int)baseNPC.NPCWidth, (int)baseNPC.NPCHeight),
+                                    baseNPC.Texture));
+                            }
+                        }
+                        else
+                        {
+                            friend[m, n] = false;
+                        }
+                    }
+                }
+
             }
             else if (gs == GameState.Hard)
             {
@@ -174,6 +208,38 @@ namespace MainGame
                         }
                     }
                 }
+
+                // friendly npc generation, there are a max of 3 friendlies per level
+                // generation is similar to that of guard generation, just with a lot less of them (in higher levels at least)
+                int friends = randy.Next(4);
+                friend = new bool[5, 15];
+                for (int n = 0; n < 15; n++)
+                {
+                    for (int m = 0; m < 5; m++)
+                    {
+                        if (friends != 0)
+                        {
+                            int positionsLeft = 15 - (n * 5) - m;
+                            curAdd = randy.Next(positionsLeft) < friends;
+                            friend[m, n] = curAdd;
+                            if (curAdd)
+                            {
+                                friends -= 1;
+                                npcList.Add(new NPC(
+                                    new Rectangle(
+                                        this.position.X + this.position.Width +
+                                        ((int)this.position.Width / 3 * n),
+                                        155 + 50 * n,
+                                        (int)baseNPC.NPCWidth, (int)baseNPC.NPCHeight),
+                                    baseNPC.Texture));
+                            }
+                        }
+                        else
+                        {
+                            friend[m, n] = false;
+                        }
+                    }
+                }
             }
             else
             {
@@ -184,7 +250,7 @@ namespace MainGame
         //The the Guard 2d array now has randomly placed "trues" where guards are supposed to be
 
         // personalized draw method
-        public void Draw(SpriteBatch sb,SpriteFont nsf,Texture2D  finishLine,SpriteFont finish)
+        public void Draw(SpriteBatch sb, SpriteFont nsf, Texture2D  finishLine, SpriteFont finish)
         {
             //This for loop allows for almost infinitely large levels to be drawn, by redrawing the background level sprite  and shifting the x
             //value over and over
@@ -201,7 +267,10 @@ namespace MainGame
             }
 
             // friendly npcs
-
+            for(int f = 0; f < npcList.Count; f++)
+            {
+                npcList[f].Draw(sb, nsf);
+            }
 
             // finish line
             sb.Draw(finishLine, new Rectangle(this.X + this.position.Width * (5 + LevelNum), this.Y,100,this.position.Height),new Rectangle(this.X + this.position.Width * (5 + LevelNum), this.Y, 100, this.position.Height), Color.White * 2.0f);
@@ -250,7 +319,7 @@ namespace MainGame
         {
             //We cant use the "position" rectangle because thats changing, on initialization we set a private rectangle as the default
             //Then reference that when a new level advancement is done
-            return new Level(this.GS, this.LevelNum + 1, this.texture, this.defaultRect, this.baseGuard);
+            return new Level(this.GS, this.LevelNum + 1, this.texture, this.defaultRect, this.baseGuard, this.baseNPC);
         }
 
 

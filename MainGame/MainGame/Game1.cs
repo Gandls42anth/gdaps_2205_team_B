@@ -53,6 +53,10 @@ namespace MainGame
         private Rectangle GuardRectangle;
         private Guard guard1;
 
+        private Texture2D npcSprite;
+        private Rectangle npcRectangle;
+        private NPC nonPlayer;
+
 
         private Texture2D background;
 
@@ -110,6 +114,11 @@ namespace MainGame
             GuardRectangle = new Rectangle(750, 305, (int)GuardSprite.Width / 2, (int)GuardSprite.Height / 2);
             guard1 = new Guard(GuardRectangle, this.GuardSprite, 3, this.viewCone);
 
+            // friendly npc
+            //PLACEHOLDER this.npcSprite = this.Content.Load<Texture2D>("");
+            // PLACEHOLDER npcRectangle = new Rectangle(750, 305, (int)npcSprite.Width / 2, (int)npcSprite.Height / 2);
+            nonPlayer = new NPC(npcRectangle, this.npcSprite);
+
             //Dead Giraffe
             deadGiraffeSprite = this.Content.Load<Texture2D>("GiraffeDead");
             deadGiraffeRectangle = new Rectangle(500, 200, deadGiraffeSprite.Width / 4, deadGiraffeSprite.Height / 4);
@@ -141,14 +150,16 @@ namespace MainGame
                         currentState = GameState.Normal;
                         DrawPlayer();
                         //Attempting first level creation
-                        this.level = new Level(GameState.Normal, 0, background, new Rectangle(0, 100, (int)background.Width / 2, (int)background.Height / 2), guard1);
+                        this.level = new Level(GameState.Normal, 0, background, 
+                            new Rectangle(0, 100, (int)background.Width / 2, (int)background.Height / 2), guard1, nonPlayer);
                     }
                     else if (SingleKeyPress(Keys.H, KBS, prevKBS))
                     {
                         currentState = GameState.Hard;
                         DrawPlayer();
                         //Attempting first level creation
-                        this.level = new Level(GameState.Hard, 0, background, new Rectangle(0, 100, (int)background.Width / 2, (int)background.Height / 2), guard1);
+                        this.level = new Level(GameState.Hard, 0, background, 
+                            new Rectangle(0, 100, (int)background.Width / 2, (int)background.Height / 2), guard1, nonPlayer);
 
                     }
                     else if (SingleKeyPress(Keys.S, KBS, prevKBS))
@@ -156,12 +167,14 @@ namespace MainGame
                         currentState = GameState.Speedrun;
                         DrawPlayer();
                         //Attempting first level creation
-                        this.level = new Level(GameState.Normal, 0, background, new Rectangle(0, 100, (int)background.Width / 2, (int)background.Height / 2), guard1);
+                        this.level = new Level(GameState.Normal, 0, background, 
+                            new Rectangle(0, 100, (int)background.Width / 2, (int)background.Height / 2), guard1, nonPlayer);
                     }else if (SingleKeyPress(Keys.E,KBS,prevKBS))
                     {
                         currentState = GameState.Endless;
                         DrawPlayer();
-                        this.level = new Level(GameState.Normal, 0, background, new Rectangle(0, 100, (int)background.Width / 2, (int)background.Height / 2), guard1);
+                        this.level = new Level(GameState.Normal, 0, background, 
+                            new Rectangle(0, 100, (int)background.Width / 2, (int)background.Height / 2), guard1, nonPlayer);
                     }
                     else if (SingleKeyPress(Keys.C, KBS, prevKBS))
                     {
