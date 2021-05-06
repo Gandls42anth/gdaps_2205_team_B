@@ -10,10 +10,9 @@ namespace MainGame
     class Level : GameObject
     {
 
-        //This is the level class, its a gameobject that represents an entire level
+        //This is the level class, it's a gameobject that represents an entire level
         private GameState GS;
         private int LevelNum;
-        List<Guard> guardList;
         private Rectangle finishLine;
         private Rectangle defaultRect;
         
@@ -22,6 +21,12 @@ namespace MainGame
         //The second value will be dependent on the length of the level, determined by the number of level and the difficulty
         private bool[,] guard;
         private Guard baseGuard;
+        List<Guard> guardList;
+
+        // the same goes for friendly npcs
+        private bool[,] friend;
+        private NPC baseNPC;
+        List<NPC> npcList;
 
         public int Num
         {
@@ -69,15 +74,20 @@ namespace MainGame
         }
 
         // constructor
-        public Level(GameState gs,int levelNum, Texture2D txt,Rectangle rect,Guard baseGuard) : base(rect,txt)
+        public Level(GameState gs,int levelNum, Texture2D txt,Rectangle rect,Guard baseGuard, NPC baseNPC) : base(rect,txt)
         {
             Random randy = new Random();
             this.defaultRect = rect;
             this.GS = gs;
             this.LevelNum = levelNum;
             bool curAdd = false;
+
             this.baseGuard = baseGuard;
             guardList = new List<Guard>();
+
+            this.baseNPC = baseNPC;
+            npcList = new List<NPC>();
+
             this.finishLine = new Rectangle(this.X + this.position.Width * (5 + LevelNum), this.Y, 100, this.position.Height);
 
             //This is where the random generation logic is handled for levels
@@ -183,10 +193,17 @@ namespace MainGame
                 sb.Draw(this.texture, new Rectangle(new Point(this.position.X + this.position.Width*i,this.position.Y), this.position.Size),Color.White);
                 sb.DrawString(nsf,string.Format("{0}",i),new Vector2(this.position.X + this.position.Width*i,this.position.Y),Color.Red);
             }
+
+            // guards
             for(int p = 0; p < guardList.Count; p++)
             {
                 guardList[p].Draw(sb);
             }
+
+            // friendly npcs
+
+
+            // finish line
             sb.Draw(finishLine, new Rectangle(this.X + this.position.Width * (5 + LevelNum), this.Y,100,this.position.Height),new Rectangle(this.X + this.position.Width * (5 + LevelNum), this.Y, 100, this.position.Height), Color.White * 2.0f);
             sb.DrawString(finish, "F\nI\nN\nI\nS\nH", new Vector2(this.X + this.position.Width * (5 + LevelNum) + 30,this.Y),Color.Black);
         }
