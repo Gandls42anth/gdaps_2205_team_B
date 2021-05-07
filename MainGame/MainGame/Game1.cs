@@ -16,7 +16,8 @@ namespace MainGame
         Speedrun,
         GameOver,
         Win,
-        Endless
+        Endless,
+        Credits
     }
 
     public class Game1 : Game
@@ -63,6 +64,16 @@ namespace MainGame
         //This is for the game over screen
         private Texture2D deadGiraffeSprite;
         private Rectangle deadGiraffeRectangle;
+
+        //These are for the credits screen
+        private Rectangle Andy;
+        private Texture2D AndyTexture;
+        private Rectangle Sean;
+        private Texture2D SeanTexture;
+        private Rectangle Nick;
+        private Texture2D NickTexture;
+        private Rectangle Nathan;
+        private Texture2D NathanTexture;
 
         public Game1()
         {
@@ -125,6 +136,15 @@ namespace MainGame
             deadGiraffeSprite = this.Content.Load<Texture2D>("FinalGiraffeSprite");
             deadGiraffeRectangle = new Rectangle(500, 200, deadGiraffeSprite.Width / 4, deadGiraffeSprite.Height / 4);
 
+            AndyTexture = this.Content.Load<Texture2D>("Andy");
+            Andy = new Rectangle(600, 250, AndyTexture.Width, AndyTexture.Height);
+            SeanTexture = this.Content.Load<Texture2D>("Sean");
+            Sean = new Rectangle(450, 100, SeanTexture.Width, SeanTexture.Height);
+            NickTexture = this.Content.Load<Texture2D>("Nick");
+            Nick = new Rectangle(450, 250, NickTexture.Width, NickTexture.Height);
+            NathanTexture = this.Content.Load<Texture2D>("Nathan");
+            Nathan = new Rectangle(600, 100, NathanTexture.Width, NathanTexture.Height);
+
             currentState = GameState.Title;
         }
 
@@ -182,10 +202,23 @@ namespace MainGame
                     {
                         currentState = GameState.Controls;
                     }
+                    else if (SingleKeyPress(Keys.X, KBS, prevKBS))
+                    {
+                        currentState = GameState.Credits;
+                    }
                     break;
+
+                    
 
                     // state logic for the controls screem
                 case GameState.Controls:
+                    if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
+                    {
+                        currentState = GameState.Title;
+                    }
+                    break;
+
+                case GameState.Credits:
                     if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
                     {
                         currentState = GameState.Title;
@@ -272,6 +305,12 @@ namespace MainGame
                     player.Update(gameTime);
 
 
+                    foreach (FriendlyNPC n in level.NPCList)
+                    {
+                        n.Update(player.CollisionBox);
+                    }
+
+
                     // temporary for now, until we can get the full game working
                     if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
                     {
@@ -336,6 +375,12 @@ namespace MainGame
                     //Player movement
                     level.Move(2 + level.Num * 2);
                     player.Update(gameTime);
+
+                    foreach (FriendlyNPC n in level.NPCList)
+                    {
+                        n.Update(player.CollisionBox);
+                    }
+
 
                     if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
                     {
@@ -485,7 +530,7 @@ namespace MainGame
                     _spriteBatch.DrawString(frontLayer, "I", new Vector2(235, 87 + (15 * (float)Math.Sin(c / 6 + 90))), Colors.ToArray()[(3 + shift) % Colors.Count]);
                     _spriteBatch.DrawString(frontLayer, "N", new Vector2(275, 87 + (15 * (float)Math.Sin(c / 6 + 120))), Colors.ToArray()[(4 + shift) % Colors.Count]);
                     _spriteBatch.DrawString(frontLayer, "?", new Vector2(345, 87 + (15 * (float)Math.Sin(c / 6 + 150))), Colors.ToArray()[(5 + shift) % Colors.Count]);
-                    _spriteBatch.DrawString(Normal, "Speedrun - Press 'S'\nEndless - Press 'E'\nHow to Play - Press 'C'", new Vector2(35, 307), Color.Gray);
+                    _spriteBatch.DrawString(Normal, "Speedrun - Press 'S'\nEndless - Press 'E'\nHow to Play - Press 'C'\nCredits - Press 'X'", new Vector2(35, 307), Color.Gray);
 
                     break;
 
@@ -503,6 +548,20 @@ namespace MainGame
                     _spriteBatch.DrawString(Normal, "Press 'ENTER' to return to main menu", new Vector2(10, 420), Color.Gray);
                     break;
 
+                case GameState.Credits:
+                    GraphicsDevice.Clear(Color.MediumSeaGreen);
+                    _spriteBatch.DrawString(frontLayer, "Creators of the Game:", new Vector2(10, 10), Color.DarkBlue);
+
+                    _spriteBatch.DrawString(Normal, "Sean Balayon\n\nNathan Steelman\n\nNick Chavez\n\nAndy Vece", new Vector2(10, 100), Color.DarkMagenta);
+
+                    _spriteBatch.Draw(AndyTexture, Andy, Color.White);
+                    _spriteBatch.Draw(SeanTexture, Sean, Color.White);
+                    _spriteBatch.Draw(NickTexture, Nick, Color.White);
+                    _spriteBatch.Draw(NathanTexture, Nathan, Color.White);
+
+                    _spriteBatch.DrawString(Normal, "Press 'ENTER' to return to main menu", new Vector2(10, 420), Color.Black);
+
+                    break;
                 case GameState.Normal:
                     level.Draw(_spriteBatch,Normal,finishLine,this.Subtitle);
                     //On normal and hard mode, tell the player how many guards there are

@@ -74,7 +74,7 @@ namespace MainGame
             this.rng = new Random();
 
             // rng decides what the npc says
-            this.messageNum = rng.Next(5);
+            this.messageNum = rng.Next(15);
             switch(messageNum)
             {
                 case 0:
@@ -96,7 +96,46 @@ namespace MainGame
                 case 4:
                     this.message = "Fun fact: birds aren't real";
                     break;
+                //The following quotes are made by Andy
+                case 5:
+                    this.message = "Life is one big Jojo reference";
+                    break;
 
+                case 6:
+                    this.message = "I'm a Sonic fan, so what?";
+                    break;
+
+                case 7:
+                    this.message = "Download CounterStrike source";
+                    break;
+
+                case 8:
+                    this.message = "Man, this really has been a 'Giraffe Noise 2'";
+                    break;
+
+                case 9:
+                    this.message = "Only a small percentage of you are subscribed";
+                    break;
+
+                case 10:
+                    this.message = "STOP POSTING ABOUT AMONG US! I'M TIRED OF SEEING IT!";
+                    break;
+
+                case 11:
+                    this.message = "Buy Miitopia for the Nintendo Switch on May 21, 2021";
+                    break;
+
+                case 12:
+                    this.message = "Nice of the princess to invite us over for a picnic, eh Luigi?";
+                    break;
+
+                case 13:
+                    this.message = "Among Us in real life SUS SUS";
+                    break;
+
+                case 14:
+                    this.message = "( ͡° ͜ʖ ͡°)";
+                    break;
                     // default case makes the message blank since rng shouldn't give a number outside the given range
                 default:
                     this.message = "";
