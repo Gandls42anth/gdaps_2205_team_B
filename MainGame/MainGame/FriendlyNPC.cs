@@ -8,7 +8,7 @@ using System.Timers;
 
 namespace MainGame
 {
-    class NPC : GameObject
+    class FriendlyNPC : GameObject
     {
         // fields
         private Rectangle npcRect;
@@ -62,7 +62,7 @@ namespace MainGame
         }
 
         // constructor
-        public NPC(Rectangle rect, Texture2D txt) : base(rect,txt)
+        public FriendlyNPC(Rectangle rect, Texture2D txt) : base(rect,txt)
         {
             this.npcRect = rect;
             this.npcTexture = txt;

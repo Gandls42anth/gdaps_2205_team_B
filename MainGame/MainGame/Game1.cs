@@ -55,7 +55,7 @@ namespace MainGame
 
         private Texture2D npcSprite;
         private Rectangle npcRectangle;
-        private NPC nonPlayer;
+        private FriendlyNPC nonPlayer;
 
 
         private Texture2D background;
@@ -119,7 +119,7 @@ namespace MainGame
             this.npcSprite = this.Content.Load<Texture2D>("FriendlyNpc (2)");
             // PLACEHOLDER 
             npcRectangle = new Rectangle(750, 305, (int)npcSprite.Width / 2, (int)npcSprite.Height / 2);
-            nonPlayer = new NPC(npcRectangle, this.npcSprite);
+            nonPlayer = new FriendlyNPC(npcRectangle, this.npcSprite);
 
             //Dead Giraffe
             deadGiraffeSprite = this.Content.Load<Texture2D>("FinalGiraffeSprite");
@@ -204,7 +204,7 @@ namespace MainGame
                     player.Update(gameTime);
 
                     // npc update
-                    foreach(NPC n in level.NPCList)
+                    foreach(FriendlyNPC n in level.NPCList)
                     {
                         n.Update(player.CollisionBox);
                     }
@@ -239,7 +239,7 @@ namespace MainGame
                     player.Update(gameTime);
 
                     // npc update
-                    foreach (NPC n in level.NPCList)
+                    foreach (FriendlyNPC n in level.NPCList)
                     {
                         n.Update(player.CollisionBox);
                     }

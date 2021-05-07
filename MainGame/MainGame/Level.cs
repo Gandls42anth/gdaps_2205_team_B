@@ -25,8 +25,8 @@ namespace MainGame
 
         // the same goes for friendly npcs
         private bool[,] friend;
-        private NPC baseNPC;
-        List<NPC> npcList;
+        private FriendlyNPC baseNPC;
+        List<FriendlyNPC> npcList;
 
         public int Num
         {
@@ -73,13 +73,13 @@ namespace MainGame
             get { return this.baseGuard; }
         }
 
-        public List<NPC> NPCList
+        public List<FriendlyNPC> NPCList
         {
             get { return this.npcList; }
         }
 
         // constructor
-        public Level(GameState gs,int levelNum, Texture2D txt,Rectangle rect,Guard baseGuard, NPC baseNPC) : base(rect,txt)
+        public Level(GameState gs,int levelNum, Texture2D txt,Rectangle rect,Guard baseGuard, FriendlyNPC baseNPC) : base(rect,txt)
         {
             Random randy = new Random();
             this.defaultRect = rect;
@@ -91,7 +91,7 @@ namespace MainGame
             guardList = new List<Guard>();
 
             this.baseNPC = baseNPC;
-            npcList = new List<NPC>();
+            npcList = new List<FriendlyNPC>();
 
             this.finishLine = new Rectangle(this.X + this.position.Width * (5 + LevelNum), this.Y, 100, this.position.Height);
 
@@ -154,7 +154,7 @@ namespace MainGame
                             if(curAdd)
                             {
                                 friends -= 1;
-                                npcList.Add(new NPC(
+                                npcList.Add(new FriendlyNPC(
                                     new Rectangle(
                                         this.position.X + this.position.Width + 
                                         ((int)this.position.Width / 3 * n),
@@ -230,7 +230,7 @@ namespace MainGame
                             if (curAdd)
                             {
                                 friends -= 1;
-                                npcList.Add(new NPC(
+                                npcList.Add(new FriendlyNPC(
                                     new Rectangle(
                                         this.position.X + this.position.Width +
                                         ((int)this.position.Width / 3 * n),
