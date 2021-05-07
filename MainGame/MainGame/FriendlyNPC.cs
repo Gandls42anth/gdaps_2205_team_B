@@ -60,6 +60,10 @@ namespace MainGame
                 this.npcRect.Height = value;
             }
         }
+        public bool Touched
+        {
+            get { return this.touched; }
+        }
 
         // constructor
         public FriendlyNPC(Rectangle rect, Texture2D txt) : base(rect,txt)
@@ -107,11 +111,12 @@ namespace MainGame
         // interaction detection
         public void Update(Rectangle incoming)
         {
+            // collision detection
             if(this.npcRect.Intersects(incoming))
             {
                 this.touched = true;
-                this.npcTime.Start();
 
+                this.npcTime.Start();
                 this.npcTime.Elapsed += new ElapsedEventHandler(AfterTime);
             }
 
