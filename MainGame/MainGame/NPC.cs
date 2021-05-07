@@ -65,6 +65,8 @@ namespace MainGame
             this.npcTexture = txt;
             this.touched = false;
 
+            this.rng = new Random();
+
             // rng decides what the npc says
             this.messageNum = rng.Next(4);
             switch(messageNum)
