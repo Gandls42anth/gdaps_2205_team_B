@@ -103,7 +103,7 @@ namespace MainGame
             // for in game
             this.viewCone = this.Content.Load<Texture2D>("unnamed");
             this.finishLine = this.Content.Load<Texture2D>("1227835");
-            this.GiraffeSprite = this.Content.Load<Texture2D>("GiraffeStatic");
+            this.GiraffeSprite = this.Content.Load<Texture2D>("FinalGiraffeSprite");
             this.GiraffeSpriteWalk = this.Content.Load<Texture2D>("GiraffeWalk");
 
             //Background
@@ -115,12 +115,14 @@ namespace MainGame
             guard1 = new Guard(GuardRectangle, this.GuardSprite, 3, this.viewCone);
 
             // friendly npc
-            //PLACEHOLDER this.npcSprite = this.Content.Load<Texture2D>("");
-            // PLACEHOLDER npcRectangle = new Rectangle(750, 305, (int)npcSprite.Width / 2, (int)npcSprite.Height / 2);
+            //PLACEHOLDER 
+            this.npcSprite = this.Content.Load<Texture2D>("FriendlyNpc (2)");
+            // PLACEHOLDER 
+            npcRectangle = new Rectangle(750, 305, (int)npcSprite.Width / 2, (int)npcSprite.Height / 2);
             nonPlayer = new NPC(npcRectangle, this.npcSprite);
 
             //Dead Giraffe
-            deadGiraffeSprite = this.Content.Load<Texture2D>("GiraffeDead");
+            deadGiraffeSprite = this.Content.Load<Texture2D>("FinalGiraffeSprite");
             deadGiraffeRectangle = new Rectangle(500, 200, deadGiraffeSprite.Width / 4, deadGiraffeSprite.Height / 4);
 
             currentState = GameState.Title;
