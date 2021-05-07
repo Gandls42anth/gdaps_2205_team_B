@@ -203,6 +203,12 @@ namespace MainGame
                     // player movement
                     player.Update(gameTime);
 
+                    // npc update
+                    foreach(NPC n in level.NPCList)
+                    {
+                        n.Update(player.CollisionBox);
+                    }
+
                     // temporary for now, until we can get the full game working
                     if (SingleKeyPress(Keys.Enter, KBS, prevKBS))
                     {
@@ -232,6 +238,11 @@ namespace MainGame
                     // player movement
                     player.Update(gameTime);
 
+                    // npc update
+                    foreach (NPC n in level.NPCList)
+                    {
+                        n.Update(player.CollisionBox);
+                    }
 
                     // Switches between gamestates
                     if (SingleKeyPress(Keys.Enter, KBS, prevKBS))

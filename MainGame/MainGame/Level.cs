@@ -73,6 +73,11 @@ namespace MainGame
             get { return this.baseGuard; }
         }
 
+        public List<NPC> NPCList
+        {
+            get { return this.npcList; }
+        }
+
         // constructor
         public Level(GameState gs,int levelNum, Texture2D txt,Rectangle rect,Guard baseGuard, NPC baseNPC) : base(rect,txt)
         {
@@ -277,12 +282,17 @@ namespace MainGame
             sb.DrawString(finish, "F\nI\nN\nI\nS\nH", new Vector2(this.X + this.position.Width * (5 + LevelNum) + 30,this.Y),Color.Black);
         }
 
-        // for guard movement
+        // for all npc movement
         public void Move(int speed = 5)
         {
             for(int i = 0; i < guardList.Count; i++)
             {
                 guardList[i].X -= speed+2;
+            }
+
+            for(int i = 0; i < npcList.Count; i++)
+            {
+                npcList[i].X -= speed + 2;
             }
 
             this.X -= speed;

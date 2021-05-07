@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Timers;
 
 namespace MainGame
 {
@@ -16,6 +17,8 @@ namespace MainGame
         private bool touched;
         private int messageNum;
         private Random rng;
+        Timer npcTime;
+        int elapsed;
 
         // properties
         // no property for touched, message number, or rng 
@@ -65,10 +68,13 @@ namespace MainGame
             this.npcTexture = txt;
             this.touched = false;
 
+            npcTime = new System.Timers.Timer();
+            this.elapsed = 0;
+
             this.rng = new Random();
 
             // rng decides what the npc says
-            this.messageNum = rng.Next(4);
+            this.messageNum = rng.Next(5);
             switch(messageNum)
             {
                 case 0:
@@ -87,6 +93,10 @@ namespace MainGame
                     this.message = "Hey, want a cupcake?";
                     break;
 
+                case 4:
+                    this.message = "Fun fact: birds aren't real";
+                    break;
+
                     // default case makes the message blank since rng shouldn't give a number outside the given range
                 default:
                     this.message = "";
@@ -95,24 +105,42 @@ namespace MainGame
         }
 
         // interaction detection
-        public void Interact(Rectangle incoming)
+        public void Update(Rectangle incoming)
         {
-            if(this.npcRect.Contains(incoming) || this.npcRect.Intersects(incoming))
+            if(this.npcRect.Intersects(incoming))
             {
                 this.touched = true;
+                this.npcTime.Start();
+
+                this.npcTime.Elapsed += new ElapsedEventHandler(AfterTime);
             }
+
+        }
+
+        private void AfterTime(object sender, ElapsedEventArgs e)
+        {
+            this.npcTime.Stop();
+            if(this.elapsed > 500)
+            {
+                this.touched = false;
+            }
+            else
+            {
+                this.npcTime.Start();
+            }
+            this.elapsed += 1;
         }
 
         // personalized draw method
-
         public void Draw(SpriteBatch sb, SpriteFont sf)
         {
-            sb.Draw(npcTexture, NPCRect, null, Color.White, 0f, new Vector2(50, 50), SpriteEffects.None, 0f);
+            sb.Draw(npcTexture, NPCRect, null, Color.White, 0, new Vector2(50, 50), SpriteEffects.None, 0f);
 
             if (this.touched)
             {
-                sb.DrawString(sf, this.message, new Vector2(35, 400), Color.White);
+                sb.DrawString(sf, this.message, new Vector2(35, 385), Color.White);
             }
         }
+
     }
 }
