@@ -115,6 +115,7 @@ namespace MainGame
             deadGiraffeRectangle = new Rectangle(500, 200, deadGiraffeSprite.Width / 4, deadGiraffeSprite.Height / 4);
 
             currentState = GameState.Title;
+            this.level = new Level(GameState.Normal, 0, background, new Rectangle(0, 100, (int)background.Width / 2, (int)background.Height / 2), guard1);
         }
 
         protected override void Update(GameTime gameTime)
@@ -141,14 +142,16 @@ namespace MainGame
                         currentState = GameState.Normal;
                         DrawPlayer();
                         //Attempting first level creation
-                        this.level = new Level(GameState.Normal, 0, background, new Rectangle(0, 100, (int)background.Width / 2, (int)background.Height / 2), guard1);
+                        this.level.GameState = GameState.Normal;
+                        this.level.Reset();
                     }
                     else if (SingleKeyPress(Keys.H, KBS, prevKBS))
                     {
                         currentState = GameState.Hard;
                         DrawPlayer();
                         //Attempting first level creation
-                        this.level = new Level(GameState.Hard, 0, background, new Rectangle(0, 100, (int)background.Width / 2, (int)background.Height / 2), guard1);
+                        this.level.GameState = GameState.Hard;
+                        this.level.Reset();
 
                     }
                     else if (SingleKeyPress(Keys.S, KBS, prevKBS))
@@ -156,12 +159,14 @@ namespace MainGame
                         currentState = GameState.Speedrun;
                         DrawPlayer();
                         //Attempting first level creation
-                        this.level = new Level(GameState.Normal, 0, background, new Rectangle(0, 100, (int)background.Width / 2, (int)background.Height / 2), guard1);
+                        this.level.GameState = GameState.Normal;
+                        this.level.Reset();
                     }else if (SingleKeyPress(Keys.E,KBS,prevKBS))
                     {
                         currentState = GameState.Endless;
                         DrawPlayer();
-                        this.level = new Level(GameState.Normal, 0, background, new Rectangle(0, 100, (int)background.Width / 2, (int)background.Height / 2), guard1);
+                        this.level.GameState = GameState.Normal;
+                        this.level.Reset();
                     }
                     else if (SingleKeyPress(Keys.C, KBS, prevKBS))
                     {
@@ -199,7 +204,7 @@ namespace MainGame
                         currentState = GameState.Win;
                     }else if (level.Win(player))
                     {
-                        level = level.Next();
+                        level.Next();
                     }
 
                     if (level.Collision(player))
@@ -229,7 +234,7 @@ namespace MainGame
                         currentState = GameState.Win;
                     }else if (level.Win(player))
                     {
-                        level = level.Next();
+                        level.Next();
                     }
                     if (level.Collision(player))
                     {
@@ -296,7 +301,7 @@ namespace MainGame
 
                     }else if (level.Win(player))
                     {
-                        level = level.Next();
+                        level.Next();
                     }
                     if (level.Collision(player))
                     {
@@ -318,7 +323,7 @@ namespace MainGame
                     //Since endless has no win condition, winning will always cause a level.next()
                     if (level.Win(player))
                     {
-                        level = level.Next();
+                        level.Next();
 
                     }
                     //The only end is if you die, in which case we record your score(# of levels cleared)

@@ -16,12 +16,22 @@ namespace MainGame
         List<Guard> guardList;
         private Rectangle finishLine;
         private Rectangle defaultRect;
+        private Level baseLevel;
         
         //This represents a 2d  array of where guard should be in a level
         //Its first value is always 5 since thats the number of rows
         //The second value will be dependent on the length of the level, determined by the number of level and the difficulty
         private bool[,] guard;
         private Guard baseGuard;
+
+        public void Reset()
+        {
+            this.position = this.defaultRect;
+            this.LevelNum = 0;
+            this.finishLine = new Rectangle(this.X + this.position.Width * (5 + LevelNum), this.Y, 100, this.position.Height);
+            guardList.Clear();
+            GuardGeneration();
+        }
 
         public int Num
         {
@@ -45,6 +55,15 @@ namespace MainGame
             {
                 this.position.Y = value;
                 this.finishLine = new Rectangle(this.X + this.position.Width * (5 + LevelNum), this.Y, 100, this.position.Height);
+            }
+        }
+
+        public GameState GameState
+        {
+            get { return this.GS; }
+            set
+            {
+                this.GS = value;
             }
         }
 
@@ -81,95 +100,9 @@ namespace MainGame
             this.finishLine = new Rectangle(this.X + this.position.Width * (5 + LevelNum), this.Y, 100, this.position.Height);
 
             //This is where the random generation logic is handled for levels
-            if (gs == GameState.Normal)
-            {
-                int guards = randy.Next(3 + levelNum,5 + levelNum * 2);
-                int positionsNum = (5 + levelNum) * 3;
-                guard = new bool[5, positionsNum];
-                for (int i = 0; i < positionsNum; i++)
-                {
-                    for (int p = 0; p < 5; p++)
-                    {
-                        //This is a bit complicated to explain, but it allows for reasonable distribution of the guards, balancing
-                        //The amount of guards left with the amount of spots left on the map
-                        //It also favors creating them on different rows instead of different columns
-                        //(Since all of them on different rows would create an easier game)
-                        if (guards != 0)
-                        {
-                            int positionsLeft = guard.Length - (i*5) - p;
-                            curAdd = randy.Next(positionsLeft) < guards;
-                            guard[p, i] = curAdd;
-                            if (curAdd)
-                            {
-                                guards -= 1;
-                                guardList.Add(new Guard
-                                    (new Rectangle
-                                    (this.position.X + this.position.Width + ((int)this.position.Width / 3 * i),
-                                    155 + 50 * p,
-                                    (int)baseGuard.GuardWidth, 
-                                    (int)baseGuard.GuardHeight),
-                                    baseGuard.Texture, 
-                                    levelNum,
-                                    baseGuard.ViewCone,
-                                    true));
-                            }
-                        }
-                        else
-                        //If we're all out of guard to give, the remaining spots will be set to false
-                        {
-                            guard[p, i] = false;
-                        }
-                    }
-                }
-            }
-            else if (gs == GameState.Hard)
-            {
-                int guards = randy.Next(5 + levelNum*2, 7 + levelNum * 3);
-                int positionsNum = (5 + levelNum) * 3;
-                guard = new bool[5, positionsNum];
-                for (int i = 0; i < positionsNum; i++)
-                {
+            GuardGeneration();
 
-                    {
-                        for (int p = 0; p < 5; p++)
-                        {
-                            //This is a bit complicated to explain, but it allows for reasonable distribution of the guards, balancing
-                            //The amount of guards left with the amount of spots left on the map
-                            //It also favors creating them on different rows instead of different columns
-                            //(Since all of them on different rows would create an easier game)
-                            if (guards != 0)
-                            {
-                                int positionsLeft = guard.Length - (i * 5) - p;
-                                curAdd = randy.Next(positionsLeft) < guards;
-                                guard[p, i] = curAdd;
-                                if (curAdd)
-                                {
-                                    guards -= 1;
-                                    guardList.Add(new Guard
-                                        (new Rectangle
-                                        (this.position.X + this.position.Width + ((int)this.position.Width / 3 * i),
-                                        155 + 50 * p,
-                                        (int)baseGuard.GuardWidth,
-                                        (int)baseGuard.GuardHeight),
-                                        baseGuard.Texture, levelNum,
-                                        baseGuard.ViewCone,
-                                        true));
-                                }
-                            }
-                            else
-                            //If we're all out of guard to give, the remaining spots will be set to false
-                            {
-                                guard[p, i] = false;
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                //This code is never supposed to run
-                guard = new bool[0, 0];
-            }
+
         }
         //The the Guard 2d array now has randomly placed "trues" where guards are supposed to be
 
@@ -229,11 +162,111 @@ namespace MainGame
 
         }
 
-        public Level Next()
+        public void Next()
         {
-            //We cant use the "position" rectangle because thats changing, on initialization we set a private rectangle as the default
-            //Then reference that when a new level advancement is done
-            return new Level(this.GS, this.LevelNum + 1, this.texture, this.defaultRect, this.baseGuard);
+            this.position = this.defaultRect;
+            this.finishLine = new Rectangle(this.X + this.position.Width * (5 + LevelNum), this.Y, 100, this.position.Height);
+            this.LevelNum += 1;
+            GuardGeneration();
+        }
+
+        public void GuardGeneration()
+        {
+            //This is where the random generation logic is handled for levels
+            guardList.Clear();
+            Random randy = new Random();
+            int levelNum = this.LevelNum;
+            bool curAdd = false;
+            GameState gs = this.GS;
+            if (gs == GameState.Normal)
+            {
+                int guards = randy.Next(3 + levelNum, 5 + levelNum * 2);
+                int positionsNum = (5 + levelNum) * 3;
+                guard = new bool[5, positionsNum];
+                for (int i = 0; i < positionsNum; i++)
+                {
+                    for (int p = 0; p < 5; p++)
+                    {
+                        //This is a bit complicated to explain, but it allows for reasonable distribution of the guards, balancing
+                        //The amount of guards left with the amount of spots left on the map
+                        //It also favors creating them on different rows instead of different columns
+                        //(Since all of them on different rows would create an easier game)
+                        if (guards != 0)
+                        {
+                            int positionsLeft = guard.Length - (i * 5) - p;
+                            curAdd = randy.Next(positionsLeft) < guards;
+                            guard[p, i] = curAdd;
+                            if (curAdd)
+                            {
+                                guards -= 1;
+                                guardList.Add(new Guard
+                                    (new Rectangle
+                                    (this.position.X + this.position.Width + ((int)this.position.Width / 3 * i),
+                                    155 + 50 * p,
+                                    (int)baseGuard.GuardWidth,
+                                    (int)baseGuard.GuardHeight),
+                                    baseGuard.Texture,
+                                    levelNum,
+                                    baseGuard.ViewCone,
+                                    true));
+                            }
+                        }
+                        else
+                        //If we're all out of guard to give, the remaining spots will be set to false
+                        {
+                            guard[p, i] = false;
+                        }
+                    }
+                }
+            }
+            else if (gs == GameState.Hard)
+            {
+                int guards = randy.Next(5 + levelNum * 2, 7 + levelNum * 3);
+                int positionsNum = (5 + levelNum) * 3;
+                guard = new bool[5, positionsNum];
+                for (int i = 0; i < positionsNum; i++)
+                {
+
+                    {
+                        for (int p = 0; p < 5; p++)
+                        {
+                            //This is a bit complicated to explain, but it allows for reasonable distribution of the guards, balancing
+                            //The amount of guards left with the amount of spots left on the map
+                            //It also favors creating them on different rows instead of different columns
+                            //(Since all of them on different rows would create an easier game)
+                            if (guards != 0)
+                            {
+                                int positionsLeft = guard.Length - (i * 5) - p;
+                                curAdd = randy.Next(positionsLeft) < guards;
+                                guard[p, i] = curAdd;
+                                if (curAdd)
+                                {
+                                    guards -= 1;
+                                    guardList.Add(new Guard
+                                        (new Rectangle
+                                        (this.position.X + this.position.Width + ((int)this.position.Width / 3 * i),
+                                        155 + 50 * p,
+                                        (int)baseGuard.GuardWidth,
+                                        (int)baseGuard.GuardHeight),
+                                        baseGuard.Texture, levelNum,
+                                        baseGuard.ViewCone,
+                                        true));
+                                }
+                            }
+                            else
+                            //If we're all out of guard to give, the remaining spots will be set to false
+                            {
+                                guard[p, i] = false;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                //This code is never supposed to run
+                guard = new bool[0, 0];
+            }
         }
 
 
