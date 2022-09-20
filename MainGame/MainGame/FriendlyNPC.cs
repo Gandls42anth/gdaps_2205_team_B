@@ -138,7 +138,7 @@ namespace MainGame
                     break;
 
                 case 14:
-                    this.message = "( ͡° ͜ʖ ͡°)";
+                    this.message = "This is an edit twp years later!";
                     break;
                     // default case makes the message blank since rng shouldn't give a number outside the given range
                 default:
